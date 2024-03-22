@@ -31,6 +31,7 @@ impl Command for PiccoloGrpcServer {
 async fn send_dbus_to_bluechi(msg: &str) -> Result<String, Box<dyn std::error::Error>> {
     println!("recv msg: {}\n", msg);
     let cmd: Vec<&str> = msg.split("/").collect();
+    // put-get test command for etcd operation
     etcd::put(msg, msg).await?;
     etcd::get(msg).await?;
 
