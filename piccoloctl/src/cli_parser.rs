@@ -1,3 +1,5 @@
+use crate::cmd_check::command_check;
+
 fn help() -> String {
     println!("Usage - piccoloctl COMMAND [PARAMETERS]");
     println!("Available command");
@@ -23,6 +25,7 @@ fn help() -> String {
 }
 
 pub fn check(input: &Vec<String>) -> Result<String, String> {
+    command_check(input);
     match input.len() {
         2 => Ok(format!("{}", input[1])),
         3 => Ok(format!("{}/{}", input[1], input[2])),
