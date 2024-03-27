@@ -2,7 +2,7 @@ use std::env;
 use std::process;
 
 mod cli_parser;
-
+mod cmd_check;
 pub mod command {
     tonic::include_proto!("command");
 }
