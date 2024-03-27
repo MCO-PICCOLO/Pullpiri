@@ -1,45 +1,10 @@
-apiVersion: crd.piccolo.org/v1alpha1
-kind: PassiveRedundant
+apiVersion: v1
+kind: Pod
 metadata:
-  name: ddstest-ping
-  labels:
-    app: ddstest-ping
+  name: piccolo-pingpong
 spec:
-  vehPodSpec:
-    podSpec:
-      containers:
-      - name: ping-container
-        image: sdv.lge.com/library/passive-redundant-ping:0.1
-        tesasdf: 123
-        abcsdfa: 114
-        ttddds: 123
-        ports:
-          - containerPort: 80
-            hostPort: 100
-            testport: 1234
-            removeportname : "sdfsd"
-        env:
-          - name: "test"
-            value: "mysql"
-            testremove: 123
-        volumeMounts:
-          - name: data
-            mountPath : /opt
-      - name: ping-container_2
-        image: sdv.lge.com/library/passive-redundant-ping:0.2
-        imagePullPolicy: Never
-        resources :
-          test123:
-            memory: "21234"
-          limits:
-            memory: "200Mi"
-          requests:
-            meory: "50mi"
-        command: ["stress"]
-        args: ["--vm", "1", "150M", "1"]
-        workingDir: /myworkspace/test
-      testcontainers: 123
-      asdfasdf: 2
-      aaaaa: 3
-      terminationGracePeriodSeconds: 0
-
+  containers:
+  - name: ping-container
+    image: sdv.lge.com/library/passive-redundant-ping:0.1
+  - name: pong-container
+    image: sdv.lge.com/library/passive-redundant-pong:0.2

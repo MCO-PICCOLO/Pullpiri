@@ -21,3 +21,7 @@ d:
 .PHONY: ctl
 ctl:
 	cargo run --bin piccoloctl $(filter-out $@,$(MAKECMDGOALS))
+
+.PHONY: yaml
+yaml:
+	cargo run --bin piccoloyaml $(filter-out $@,$(MAKECMDGOALS))

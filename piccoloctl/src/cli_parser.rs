@@ -1,6 +1,4 @@
-use crate::cmd_check::command_check;
-
-fn help() -> String {
+fn help() {
     println!("Usage - piccoloctl COMMAND [PARAMETERS]");
     println!("Available command");
     println!("  - list-node: shows node list");
@@ -21,15 +19,16 @@ fn help() -> String {
     println!("    usage: piccoloctl disable NODE_NAME UNIT_NAME");
     println!("  - daemon-reload: equivalent to 'systemctl daemon-reload'");
     println!("    usage: piccoloctl daemon-reload NODE_NAME");
-    "not support".to_owned()
 }
 
 pub fn check(input: &Vec<String>) -> Result<String, String> {
-    command_check(input);
     match input.len() {
         2 => Ok(format!("{}", input[1])),
         3 => Ok(format!("{}/{}", input[1], input[2])),
         4 => Ok(format!("{}/{}/{}", input[1], input[2], input[3])),
-        _ => Err(help()),
+        _ => {
+            help();
+            std::process::exit(1);
+        }
     }
 }

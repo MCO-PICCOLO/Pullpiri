@@ -1,17 +1,14 @@
 use std::env;
 use std::ffi::OsStr;
+use std::fs;
 use std::fs::File;
+use std::io;
 use std::io::Write;
 use std::path::Path;
-use std::fs;
-use std::io;
 
-fn remove_extension(name: &str) -> String{
-    let stem = Path::new(name)
-    .file_stem()
-    .and_then(OsStr::to_str)
-    .unwrap();
-stem.to_string()
+fn remove_extension(name: &str) -> String {
+    let stem = Path::new(name).file_stem().and_then(OsStr::to_str).unwrap();
+    stem.to_string()
 }
 
 fn create_path_if_not_exists(path: &str) -> io::Result<()> {
@@ -39,7 +36,7 @@ fn copy_yaml_file(path: &str, file_name: &str) -> io::Result<()> {
     Ok(())
 }
 
-fn write_content(path: &str,file: &mut File,file_name: &str) -> io::Result<()> {
+fn write_content(path: &str, file: &mut File, file_name: &str) -> io::Result<()> {
     let dir_str = convert_path_to_string(path);
     let default_contents = "[Install]\nWantedBy=default.target\n\n[Unit]\nRequires=quadlet-demo-mysql.service\nAfter=quadlet-demo-mysql.service\n\n";
     let contents = format!("[Kube]\nYaml={}{}\n", dir_str, file_name);
@@ -52,28 +49,28 @@ pub fn command_check(input: &Vec<String>) {
     if input.len() >= 3 {
         if input[1] == "apply" {
             let origin_name = input[3].as_str();
-            let path ="/etc/containers/systemd/";
+            let path = "/etc/containers/systemd/";
             let name: String = remove_extension(origin_name);
             let file_name: String = format!("{}.kube", name);
-            
-            match create_path_if_not_exists(path){
+
+            match create_path_if_not_exists(path) {
                 Ok(_) => println!("Path created successfully."),
                 Err(e) => println!("Failed to create path: {}", e),
             }
 
             let file: Result<File, io::Error> = create_kube_file(path, &file_name);
-            match file{
+            match file {
                 Ok(mut file) => {
                     println!("Kube File created successfully.");
                     match write_content(path, &mut file, origin_name) {
                         Ok(_) => println!("contents Write successfully."),
                         Err(e) => println!("contents Write Failed : {}", e),
                     }
-                },
+                }
                 Err(e) => println!("Kube Failed to create file: {}", e),
             }
 
-            match copy_yaml_file(path, origin_name){
+            match copy_yaml_file(path, origin_name) {
                 Ok(_) => println!("Yaml File copy successfully."),
                 Err(e) => println!("Yaml Failed to copy : {}", e),
             }
