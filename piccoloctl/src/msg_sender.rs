@@ -6,6 +6,8 @@ use command::SendRequest;
 use tonic::{Request, Response, Status};
 
 pub async fn send_grpc_msg(msg: String) -> Result<Response<command::SendReply>, Status> {
+    println!("sending msg - '{msg}'\n");
+
     let mut client = CommandClient::connect("http://[::1]:50101")
         .await
         .unwrap_or_else(|err| {
