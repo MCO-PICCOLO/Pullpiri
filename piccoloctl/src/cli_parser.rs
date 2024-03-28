@@ -1,34 +1,34 @@
-fn help() {
-    println!("Usage - piccoloctl COMMAND [PARAMETERS]");
-    println!("Available command");
-    println!("  - list-node: shows node list");
-    println!("    usage: piccoloctl list-node");
-    println!("  - list-unit: shows unit list in node");
-    println!("    usage: piccoloctl list-unit NODE_NAME");
-    println!("  - start: start unit in node");
-    println!("    usage: piccoloctl start NODE_NAME UNIT_NAME");
-    println!("  - stop: stop unit in node");
-    println!("    usage: piccoloctl stop NODE_NAME UNIT_NAME");
-    println!("  - restart: restart unit in node");
-    println!("    usage: piccoloctl restart NODE_NAME UNIT_NAME");
-    println!("  - reload: reload unit in node");
-    println!("    usage: piccoloctl reload NODE_NAME UNIT_NAME");
-    println!("  - enable: enable unit in node");
-    println!("    usage: piccoloctl enable NODE_NAME UNIT_NAME");
-    println!("  - disable: disable unit in node");
-    println!("    usage: piccoloctl disable NODE_NAME UNIT_NAME");
-    println!("  - daemon-reload: equivalent to 'systemctl daemon-reload'");
-    println!("    usage: piccoloctl daemon-reload NODE_NAME");
-}
+const HELP: &str = r#"
+Usage - piccoloctl COMMAND [PARAMETERS]
 
-pub fn check(input: &Vec<String>) -> Result<String, String> {
+Available commands:
+  list-node         shows node list
+  list-unit         shows unit list in node
+  start             start unit in node
+  stop              stop unit in node
+  restart           restart unit in node
+  reload            reload unit in node
+  enable            enable unit in node
+  disable           disable unit in node
+  daemon-reload     equivalent to 'systemctl daemon-reload'
+
+Usage:
+  piccoloctl list-node
+  piccoloctl list-unit NODE_NAME
+  piccoloctl start NODE_NAME UNIT_NAME
+  piccoloctl stop NODE_NAME UNIT_NAME
+  piccoloctl restart NODE_NAME UNIT_NAME
+  piccoloctl reload NODE_NAME UNIT_NAME
+  piccoloctl enable NODE_NAME UNIT_NAME
+  piccoloctl disable NODE_NAME UNIT_NAME
+  piccoloctl daemon-reload NODE_NAME
+"#;
+
+pub fn check(input: &Vec<String>) -> Result<String, &str> {
     match input.len() {
         2 => Ok(format!("{}", input[1])),
         3 => Ok(format!("{}/{}", input[1], input[2])),
         4 => Ok(format!("{}/{}/{}", input[1], input[2], input[3])),
-        _ => {
-            help();
-            std::process::exit(1);
-        }
+        _ => Err(HELP),
     }
 }
