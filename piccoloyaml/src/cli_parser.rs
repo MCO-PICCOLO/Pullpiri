@@ -1,21 +1,22 @@
-use crate::cmd_check::command_check;
+const HELP: &str = r#"
+Usage - piccoloyaml COMMAND [PARAMETERS]
 
-fn help() -> String {
-    println!("Usage - piccoloyaml COMMAND [PARAMETERS]");
-    println!("Available command");
-    println!("  - apply: make systemd service file");
-    println!("    usage: piccoloyaml apply FILE_NAME");
-    println!("  - delete: delete systemd service file");
-    println!("    usage: piccoloyaml delete FILE_NAME");
-    "not support".to_owned()
-}
+Available commands:
+  apply         make systemd service file
+  delete        delete systemd service file
 
-pub fn check(input: &Vec<String>) -> Result<String, String> {
-    command_check(input);
-    match input.len() {
-        2 => Ok(format!("{}", input[1])),
-        3 => Ok(format!("{}/{}", input[1], input[2])),
-        4 => Ok(format!("{}/{}/{}", input[1], input[2], input[3])),
-        _ => Err(help()),
+Usage:
+  piccoloyaml apply FILE_NAME
+  piccoloyaml delete FILE_NAME
+"#;
+
+pub fn check(input: &Vec<String>) -> Result<(), &str> {
+    if input.len() != 3 {
+        return Err(HELP);
+    }
+    let command = input[1].as_str();
+    match command {
+        "apply" | "delete" => Ok(()),
+        _ => Err(HELP),
     }
 }

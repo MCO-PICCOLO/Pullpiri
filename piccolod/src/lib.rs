@@ -1,7 +1,6 @@
 mod etcd;
-mod method_controller;
-mod method_node;
-mod method_unit;
+mod method_bluechi;
+use method_bluechi::{method_controller, method_node, method_unit};
 
 pub mod command {
     tonic::include_proto!("command");

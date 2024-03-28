@@ -5,7 +5,7 @@ use command::command_client::CommandClient;
 use command::SendRequest;
 use tonic::{Request, Response, Status};
 
-pub async fn send_grpc_msg(msg: String) -> Result<Response<command::SendReply>, Status> {
+pub async fn send_grpc_msg(msg: &str) -> Result<Response<command::SendReply>, Status> {
     println!("sending msg - '{msg}'\n");
 
     let mut client = CommandClient::connect("http://[::1]:50101")
@@ -15,5 +15,9 @@ pub async fn send_grpc_msg(msg: String) -> Result<Response<command::SendReply>, 
             std::process::exit(1);
         });
 
-    client.send(Request::new(SendRequest { cmd: msg })).await
+    client
+        .send(Request::new(SendRequest {
+            cmd: msg.to_owned(),
+        }))
+        .await
 }
