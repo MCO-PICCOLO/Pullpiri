@@ -18,6 +18,10 @@ clean: fmt
 d:
 	cargo run --bin piccolod
 
+.PHONY: etcd
+etcd:
+	cargo run --bin etcd
+
 .PHONY: ctl
 ctl:
 	cargo run --bin piccoloctl $(filter-out $@,$(MAKECMDGOALS))

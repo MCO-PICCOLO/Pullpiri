@@ -1,19 +1,16 @@
-pub mod command {
-    tonic::include_proto!("command");
-}
-use command::command_client::CommandClient;
-use command::SendRequest;
+use api::proto::piccolo::connection_client::ConnectionClient;
+use api::proto::piccolo::{FromServer, ToServer};
 use tonic::{Request, Response, Status};
 
-pub async fn send_grpc_msg(msg: String) -> Result<Response<command::SendReply>, Status> {
-    println!("sending msg - '{msg}'\n");
+pub async fn send_grpc_msg(req: ToServer) -> Result<Response<FromServer>, Status> {
+    println!("sending msg - '{:?}'\n", req);
 
-    let mut client = CommandClient::connect("http://[::1]:50101")
+    let mut client = ConnectionClient::connect("http://127.0.0.1:50101")
         .await
         .unwrap_or_else(|err| {
             println!("FAIL - {}\ncannot connect to gRPC server", err);
             std::process::exit(1);
         });
 
-    client.send(Request::new(SendRequest { cmd: msg })).await
+    client.send(Request::new(req)).await
 }

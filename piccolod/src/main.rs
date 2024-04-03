@@ -1,6 +1,20 @@
-use piccolod;
+mod etcd;
+mod grpc_msg_handler;
+mod method_bluechi;
+
+use crate::grpc_msg_handler::PiccoloGrpcServer;
+use api::proto::piccolo::connection_server::ConnectionServer;
+use tonic::transport::Server;
 
 #[tokio::main]
 async fn main() {
-    piccolod::run().await;
+    let addr = "127.0.0.1:50101".parse().unwrap();
+    let piccolo_grpc_server = PiccoloGrpcServer::default();
+
+    println!("Piccolod api-server listening on {}", addr);
+
+    let _ = Server::builder()
+        .add_service(ConnectionServer::new(piccolo_grpc_server))
+        .serve(addr)
+        .await;
 }

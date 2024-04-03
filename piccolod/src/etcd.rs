@@ -23,11 +23,3 @@ pub async fn delete(key: &str) -> Result<(), Error> {
     client.delete(key, None).await?;
     Ok(())
 }
-
-pub fn init_server() {
-    std::thread::spawn(|| {
-        std::process::Command::new("/usr/bin/etcd")
-            .stdout(std::process::Stdio::null())
-            .output()
-    });
-}

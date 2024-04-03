@@ -81,6 +81,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0952808a6c2afd1aa8947271f3a60f1a6763c7b912d210184c5149b5cf147247"
 
 [[package]]
+name = "api"
+version = "0.1.0"
+dependencies = [
+ "prost",
+ "tonic 0.11.0",
+ "tonic-build 0.11.0",
+]
+
+[[package]]
 name = "async-stream"
 version = "0.3.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -297,6 +306,9 @@ dependencies = [
 [[package]]
 name = "etcd"
 version = "0.1.0"
+dependencies = [
+ "etcd-client",
+]
 
 [[package]]
 name = "etcd-client"
@@ -667,6 +679,7 @@ dependencies = [
 name = "piccoloctl"
 version = "0.1.0"
 dependencies = [
+ "api",
  "prost",
  "tokio",
  "tonic 0.11.0",
@@ -677,6 +690,7 @@ dependencies = [
 name = "piccolod"
 version = "0.1.0"
 dependencies = [
+ "api",
  "dbus",
  "etcd-client",
  "prost",
@@ -689,6 +703,7 @@ dependencies = [
 name = "piccoloyaml"
 version = "0.1.0"
 dependencies = [
+ "api",
  "clap",
  "prost",
  "tokio",
@@ -951,9 +966,9 @@ version = "0.1.0"
 
 [[package]]
 name = "strsim"
-version = "0.11.0"
+version = "0.11.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5ee073c9e4cd00e28217186dbe12796d692868f432bf2e97ee73bed0c56dfa01"
+checksum = "7da8b5736845d9f2fcb837ea5d9e2628564b3b043a70948a3f0b778838c5fb4f"
 
 [[package]]
 name = "syn"

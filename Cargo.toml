@@ -7,4 +7,5 @@ members = [
     "piccoloyaml",
     "etcd",
     "statemanager",
+    "api",
 ]
