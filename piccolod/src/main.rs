@@ -8,7 +8,7 @@ use tonic::transport::Server;
 
 #[tokio::main]
 async fn main() {
-    let addr = "127.0.0.1:50101".parse().unwrap();
+    let addr = common::DEFAULT_API_SERVER_ENDPOINT.parse().unwrap();
     let piccolo_grpc_server = PiccoloGrpcServer::default();
 
     println!("Piccolod api-server listening on {}", addr);

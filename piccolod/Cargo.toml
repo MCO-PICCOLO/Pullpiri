@@ -9,6 +9,7 @@ license = "MIT"
 
 [dependencies]
 api = { path = "../api" }
+common = { path = "../common" }
 dbus = "0.9.7"
 tonic = "0.11.0"
 prost = "0.12.3"

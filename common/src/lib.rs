@@ -1,0 +1,2 @@
+pub const DEFAULT_API_SERVER_ENDPOINT: &str = "127.0.0.1:50101";
+pub const DEFAULT_ETCD_ENDPOINT: &str = "127.0.0.1:2379";

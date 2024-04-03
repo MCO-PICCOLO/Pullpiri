@@ -1,9 +1,7 @@
 use etcd_client::{Client, Error};
 
-const DEFAULT_TEST_ENDPOINT: &str = "localhost:2379";
-
 async fn get_client() -> Result<Client, Error> {
-    Client::connect([DEFAULT_TEST_ENDPOINT], None).await
+    Client::connect([common::DEFAULT_ETCD_ENDPOINT], None).await
 }
 
 pub async fn put(key: &str, value: &str) -> Result<(), Error> {

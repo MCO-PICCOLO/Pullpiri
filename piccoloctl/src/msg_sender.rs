@@ -5,7 +5,7 @@ use tonic::{Request, Response, Status};
 pub async fn send_grpc_msg(req: ToServer) -> Result<Response<FromServer>, Status> {
     println!("sending msg - '{:?}'\n", req);
 
-    let mut client = ConnectionClient::connect("http://127.0.0.1:50101")
+    let mut client = ConnectionClient::connect(common::DEFAULT_API_SERVER_ENDPOINT)
         .await
         .unwrap_or_else(|err| {
             println!("FAIL - {}\ncannot connect to gRPC server", err);

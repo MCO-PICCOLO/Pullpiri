@@ -18,7 +18,6 @@ impl Connection for PiccoloGrpcServer {
         println!("Got a request from {:?}", request.remote_addr());
 
         let request = request.into_inner();
-        //let msg = request.to_server_content;
         if let Some(to_server_command) = request.to_server_content {
             match to_server_command {
                 UpdateWorkload(update_workload) => match update_workload.update_method() {
