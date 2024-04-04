@@ -25,7 +25,7 @@ Yaml="#;
 fn get_absolute_file_path(name: &str) -> Result<String> {
     let file = Path::new(name);
     if !file.is_file() {
-        return Err!(format!("Not found or invalid - {}", name));
+        return Err!(format!("Not found or invalid path - {}", name));
     }
 
     if matches!(file.extension(), Some(x) if x == OsStr::new("yaml")) {
