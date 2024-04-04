@@ -113,12 +113,12 @@ fn disable_unit(node_name: &str, unit_name: &str) -> Result<String, Box<dyn std:
 
 pub fn handle_cmd(c: Vec<&str>) -> Result<String, Box<dyn std::error::Error>> {
     match c[0] {
-        "start" => unit_lifecycle(Lifecycle::Start, c[1], c[2]),
-        "stop" => unit_lifecycle(Lifecycle::Stop, c[1], c[2]),
-        "restart" => unit_lifecycle(Lifecycle::Restart, c[1], c[2]),
-        "reload" => unit_lifecycle(Lifecycle::Reload, c[1], c[2]),
-        "enable" => enable_unit(c[1], c[2]),
-        "disable" => disable_unit(c[1], c[2]),
+        "START" => unit_lifecycle(Lifecycle::Start, c[1], c[2]),
+        "STOP" => unit_lifecycle(Lifecycle::Stop, c[1], c[2]),
+        "RESTART" => unit_lifecycle(Lifecycle::Restart, c[1], c[2]),
+        "RELOAD" => unit_lifecycle(Lifecycle::Reload, c[1], c[2]),
+        "ENABLE" => enable_unit(c[1], c[2]),
+        "DISABLE" => disable_unit(c[1], c[2]),
         _ => Err("cannot find command".into()),
     }
 }

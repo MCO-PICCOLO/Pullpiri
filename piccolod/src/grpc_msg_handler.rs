@@ -4,7 +4,7 @@ use crate::method_bluechi::{method_controller, method_node, method_unit};
 use api::proto::piccolo::connection_server::Connection;
 use api::proto::piccolo::request::RequestContent::{ControllerRequest, NodeRequest};
 use api::proto::piccolo::to_server::ToServerContent::{Request, UpdateWorkload};
-use api::proto::piccolo::{ControllerCommand, FromServer, NodeCommand, ToServer, UpdateMethod};
+use api::proto::piccolo::{FromServer, ToServer};
 
 #[derive(Default)]
 pub struct PiccoloGrpcServer {}
@@ -18,40 +18,49 @@ impl Connection for PiccoloGrpcServer {
         println!("Got a request from {:?}", request.remote_addr());
 
         let request = request.into_inner();
-        if let Some(to_server_command) = request.to_server_content {
-            match to_server_command {
-                UpdateWorkload(update_workload) => match update_workload.update_method() {
-                    UpdateMethod::Start => todo!(),
-                    UpdateMethod::Stop => todo!(),
-                    UpdateMethod::Restart => todo!(),
-                    UpdateMethod::Reload => todo!(),
-                    UpdateMethod::Enable => todo!(),
-                    UpdateMethod::Disable => todo!(),
-                },
-                Request(request) => {
-                    if let Some(request_command) = request.request_content {
-                        match request_command {
-                            ControllerRequest(controller_request) => {
-                                match controller_request.controller_command() {
-                                    ControllerCommand::ListNode => todo!(),
-                                    ControllerCommand::DaemonReload => todo!(),
-                                }
-                            }
-                            NodeRequest(node_request) => match node_request.node_command() {
-                                NodeCommand::ListUnit => todo!(),
-                            },
+        let command = parse_to_server_command(&request);
+
+        match send_dbus_to_bluechi(&command).await {
+            Ok(v) => Ok(tonic::Response::new(FromServer { response: v })),
+            Err(e) => Err(tonic::Status::new(tonic::Code::Unavailable, e.to_string())),
+        }
+    }
+}
+
+fn parse_to_server_command(req: &ToServer) -> String {
+    let mut ret = String::new();
+    if let Some(to_server_command) = &req.to_server_content {
+        match to_server_command {
+            UpdateWorkload(update_workload) => {
+                ret = format!(
+                    "{}/{}/{}",
+                    update_workload.update_method().as_str_name(),
+                    &update_workload.node_name,
+                    &update_workload.unit_name
+                );
+            }
+            Request(request) => {
+                if let Some(request_command) = &request.request_content {
+                    match request_command {
+                        ControllerRequest(controller_request) => {
+                            ret = format!(
+                                "{}",
+                                controller_request.controller_command().as_str_name()
+                            );
+                        }
+                        NodeRequest(node_request) => {
+                            ret = format!(
+                                "{}/{}",
+                                node_request.node_command().as_str_name(),
+                                &node_request.node_name
+                            );
                         }
                     }
                 }
             }
         }
-
-        let asdf = "asdf";
-        match send_dbus_to_bluechi(asdf).await {
-            Ok(v) => Ok(tonic::Response::new(FromServer { response: v })),
-            Err(e) => Err(tonic::Status::new(tonic::Code::Unavailable, e.to_string())),
-        }
     }
+    ret
 }
 
 async fn send_dbus_to_bluechi(msg: &str) -> Result<String, Box<dyn std::error::Error>> {
