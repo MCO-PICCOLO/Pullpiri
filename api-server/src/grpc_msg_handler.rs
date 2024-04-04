@@ -1,10 +1,10 @@
 use crate::etcd;
-use crate::method_bluechi::{method_controller, method_node, method_unit};
 
-use api::proto::piccolo::connection_server::Connection;
-use api::proto::piccolo::request::RequestContent::{ControllerRequest, NodeRequest};
-use api::proto::piccolo::to_server::ToServerContent::{Request, UpdateWorkload};
-use api::proto::piccolo::{FromServer, ToServer};
+use common::apiserver::connection_server::Connection;
+use common::apiserver::request::RequestContent::{ControllerRequest, NodeRequest};
+use common::apiserver::to_server::ToServerContent::{Request, UpdateWorkload};
+use common::apiserver::{FromServer, ToServer};
+use common::statemanager::{connection_client::ConnectionClient, SendRequest, SendResponse};
 
 #[derive(Default)]
 pub struct PiccoloGrpcServer {}
@@ -21,7 +21,9 @@ impl Connection for PiccoloGrpcServer {
         let command = parse_to_server_command(&request);
 
         match send_dbus_to_bluechi(&command).await {
-            Ok(v) => Ok(tonic::Response::new(FromServer { response: v })),
+            Ok(v) => Ok(tonic::Response::new(FromServer {
+                response: v.into_inner().response,
+            })),
             Err(e) => Err(tonic::Status::new(tonic::Code::Unavailable, e.to_string())),
         }
     }
@@ -63,20 +65,23 @@ fn parse_to_server_command(req: &ToServer) -> String {
     ret
 }
 
-async fn send_dbus_to_bluechi(msg: &str) -> Result<String, Box<dyn std::error::Error>> {
-    println!("recv msg: {}\n", msg);
-    let cmd: Vec<&str> = msg.split("/").collect();
-    // put-get test command for etcd operation
-    etcd::put(msg, msg).await?;
-    etcd::get(msg).await?;
+async fn send_dbus_to_bluechi(msg: &str) -> Result<tonic::Response<SendResponse>, tonic::Status> {
+    println!("sending msg - '{}'\n", msg);
+    let _ = etcd::put("asdf", "asdf").await;
+    let _ = etcd::get("asdf").await;
+    let _ = etcd::delete("asdf").await;
 
-    match cmd.len() {
-        1 => method_controller::handle_cmd(cmd),
-        2 => method_node::handle_cmd(cmd),
-        3 => method_unit::handle_cmd(cmd),
-        _ => {
-            etcd::delete(msg).await?;
-            Err("support only 1 ~ 3 parameters".into())
-        }
-    }
+    let mut client = ConnectionClient::connect(common::DEFAULT_STATE_MANAGER_CONNECT)
+        .await
+        .unwrap_or_else(|err| {
+            println!("FAIL - {}\ncannot connect to gRPC server", err);
+            std::process::exit(1);
+        });
+
+    client
+        .send(tonic::Request::new(SendRequest {
+            from: "api-server".to_owned(),
+            request: msg.to_owned(),
+        }))
+        .await
 }

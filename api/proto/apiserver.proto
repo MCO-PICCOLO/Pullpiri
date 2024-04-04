@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package filter;
+package apiserver;
 
 service Connection {
   rpc Send (ToServer) returns (FromServer);

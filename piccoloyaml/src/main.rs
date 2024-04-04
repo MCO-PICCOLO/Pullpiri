@@ -3,7 +3,7 @@ mod file_handler;
 mod msg_sender;
 
 use clap::Parser;
-use common::ControllerCommand;
+use common::apiserver::ControllerCommand;
 
 #[tokio::main]
 async fn main() {

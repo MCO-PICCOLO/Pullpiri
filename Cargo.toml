@@ -3,7 +3,7 @@ resolver = "2"
 
 members = [
     "piccoloctl",
-    "piccolod",
+    "api-server",
     "piccoloyaml",
     "etcd",
     "statemanager",

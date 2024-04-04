@@ -1,9 +1,8 @@
 mod etcd;
 mod grpc_msg_handler;
-mod method_bluechi;
 
 use crate::grpc_msg_handler::PiccoloGrpcServer;
-use api::proto::piccolo::connection_server::ConnectionServer;
+use common::apiserver::connection_server::ConnectionServer;
 use tonic::transport::Server;
 
 #[tokio::main]

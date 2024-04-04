@@ -1,5 +1,5 @@
-use api::proto::piccolo::connection_client::ConnectionClient;
-use api::proto::piccolo::{FromServer, ToServer};
+use common::apiserver::connection_client::ConnectionClient;
+use common::apiserver::{FromServer, ToServer};
 use tonic::{Request, Response, Status};
 
 pub async fn send_grpc_msg(req: ToServer) -> Result<Response<FromServer>, Status> {

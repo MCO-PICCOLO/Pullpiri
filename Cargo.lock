@@ -90,6 +90,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "api-server"
+version = "0.1.0"
+dependencies = [
+ "api",
+ "common",
+ "dbus",
+ "etcd-client",
+ "prost",
+ "tokio",
+ "tonic 0.11.0",
+ "tonic-build 0.11.0",
+]
+
+[[package]]
 name = "async-stream"
 version = "0.3.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -696,20 +710,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "piccolod"
-version = "0.1.0"
-dependencies = [
- "api",
- "common",
- "dbus",
- "etcd-client",
- "prost",
- "tokio",
- "tonic 0.11.0",
- "tonic-build 0.11.0",
-]
-
-[[package]]
 name = "piccoloyaml"
 version = "0.1.0"
 dependencies = [
@@ -974,6 +974,16 @@ dependencies = [
 [[package]]
 name = "statemanager"
 version = "0.1.0"
+dependencies = [
+ "api",
+ "common",
+ "dbus",
+ "etcd-client",
+ "prost",
+ "tokio",
+ "tonic 0.11.0",
+ "tonic-build 0.11.0",
+]
 
 [[package]]
 name = "strsim"
