@@ -48,8 +48,8 @@ fn reload_all_nodes() -> Result<String, Box<dyn std::error::Error>> {
 
 pub fn handle_cmd(c: Vec<&str>) -> Result<String, Box<dyn std::error::Error>> {
     match c[0] {
-        "list-node" => list_nodes(),
-        "apply" | "delete" => reload_all_nodes(),
+        "LIST_NODE" => list_nodes(),
+        "DAEMON_RELOAD" => reload_all_nodes(),
         _ => Err("cannot find command".into()),
     }
 }

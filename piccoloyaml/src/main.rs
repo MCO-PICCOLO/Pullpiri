@@ -2,21 +2,26 @@ mod cli_parser;
 mod file_handler;
 mod msg_sender;
 
-fn abnormal_termination<T: std::fmt::Display>(err: T) {
-    println!("- FAIL -\n{}", err);
-    std::process::exit(1);
-}
+use clap::Parser;
+use common::apiserver::{get_controller_command, ControllerCommand};
 
 #[tokio::main]
 async fn main() {
-    let args: Vec<String> = std::env::args().collect();
-    cli_parser::check(&args).unwrap_or_else(|err| abnormal_termination(err));
+    let args = cli_parser::Arguments::parse();
+    let (cmd, yaml_path) = match &args.command {
+        cli_parser::Command::Apply(file) => ("apply", &file.name),
+        cli_parser::Command::Delete(file) => ("delete", &file.name),
+    };
 
-    let (cmd, yaml_path) = (args.get(1).unwrap(), args.get(2).unwrap());
-    file_handler::handle(cmd, yaml_path).unwrap_or_else(|err| abnormal_termination(err));
+    file_handler::handle(cmd, yaml_path).unwrap_or_else(|err| {
+        println!("- FAIL -\n{:#?}", err);
+        std::process::exit(1);
+    });
 
-    match msg_sender::send_grpc_msg(cmd).await {
-        Ok(t) => println!("- SUCCESS -\n{}", t.into_inner().desc),
-        Err(t) => abnormal_termination(t),
+    let req = get_controller_command(ControllerCommand::DaemonReload);
+
+    match msg_sender::send_grpc_msg(req).await {
+        Ok(t) => println!("- SUCCESS -\n{}", t.into_inner().response),
+        Err(t) => println!("- FAIL -\n{:#?}", t),
     }
 }

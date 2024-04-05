@@ -1,6 +1,5 @@
 use std::ffi::OsStr;
 use std::fs;
-use std::fs::File;
 use std::io::{Error, ErrorKind, Result, Write};
 use std::path::Path;
 
@@ -25,7 +24,7 @@ Yaml="#;
 fn get_absolute_file_path(name: &str) -> Result<String> {
     let file = Path::new(name);
     if !file.is_file() {
-        return Err!(format!("Not found or invalid - {}", name));
+        return Err!(format!("Not found or invalid path - {}", name));
     }
 
     if matches!(file.extension(), Some(x) if x == OsStr::new("yaml")) {
@@ -37,7 +36,7 @@ fn get_absolute_file_path(name: &str) -> Result<String> {
 }
 
 fn create_dst_file(src_yaml_path: &str, dst_yaml_path: &str) -> Result<()> {
-    let mut file = File::create(Path::new(dst_yaml_path).with_extension("kube"))?;
+    let mut file = fs::File::create(Path::new(dst_yaml_path).with_extension("kube"))?;
 
     file.write_all(format!("{}{}", CONTENTS_HEADER, dst_yaml_path).as_bytes())?;
     fs::copy(src_yaml_path, dst_yaml_path)?;

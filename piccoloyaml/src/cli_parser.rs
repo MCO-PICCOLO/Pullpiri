@@ -1,22 +1,22 @@
-const HELP: &str = r#"
-Usage - piccoloyaml COMMAND [PARAMETERS]
+use clap::{Args, Parser, Subcommand};
 
-Available commands:
-  apply         make systemd service file
-  delete        delete systemd service file
+#[derive(Parser, Debug)]
+pub struct Arguments {
+    #[clap(subcommand)]
+    /// command name.
+    pub command: Command,
+}
 
-Usage:
-  piccoloyaml apply FILE_NAME
-  piccoloyaml delete FILE_NAME
-"#;
+#[derive(Subcommand, Debug)]
+pub enum Command {
+    /// make systemd service file
+    Apply(File),
+    /// delete systemd service file
+    Delete(File),
+}
 
-pub fn check(input: &Vec<String>) -> Result<(), &str> {
-    if input.len() != 3 {
-        return Err(HELP);
-    }
-    let command = input[1].as_str();
-    match command {
-        "apply" | "delete" => Ok(()),
-        _ => Err(HELP),
-    }
+#[derive(Args, Debug)]
+pub struct File {
+    /// file name
+    pub name: String,
 }

@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package apiserver;
+
+service Connection {
+  rpc Send (ToServer) returns (FromServer);
+}
+
+message FromServer {
+  string response = 1;
+}
+
+message ToServer {
+  oneof ToServerContent {
+    Request request = 1;
+    UpdateWorkload updateWorkload = 2;
+  }
+}
+
+message Request {
+  oneof RequestContent {
+    ControllerRequest controllerRequest = 1;
+    NodeRequest nodeRequest = 2;
+  }
+}
+
+message UpdateWorkload {
+  UpdateMethod updateMethod = 1;
+  string node_name = 2;
+  string unit_name = 3;
+}
+
+enum UpdateMethod {
+  START = 0;
+  STOP = 1;
+  RESTART = 2;
+  RELOAD = 3;
+  ENABLE = 4;
+  DISABLE = 5;
+}
+
+message ControllerRequest {
+  ControllerCommand controllerCommand = 1;
+}
+
+enum ControllerCommand {
+  LIST_NODE = 0;
+  DAEMON_RELOAD = 1;
+}
+
+message NodeRequest {
+  NodeCommand nodeCommand = 1;
+  string node_name = 2;
+}
+
+enum NodeCommand {
+  LIST_UNIT = 0;
+}

@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package statemanager;
+
+service Connection {
+  rpc Send (SendRequest) returns (SendResponse);
+}
+
+message SendRequest {
+  string from = 1;
+  string request = 2;
+}
+
+message SendResponse {
+  string response = 1;
+}
