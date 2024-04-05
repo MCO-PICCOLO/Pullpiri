@@ -1,4 +1,5 @@
 /target
 **/default.etcd
 .vscode/
+/bin
 

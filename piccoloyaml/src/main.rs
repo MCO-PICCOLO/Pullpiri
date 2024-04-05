@@ -18,7 +18,7 @@ async fn main() {
         std::process::exit(1);
     });
 
-    let req = common::get_controller_command(ControllerCommand::DaemonReload);
+    let req = common::apiserver::get_controller_command(ControllerCommand::DaemonReload);
 
     match msg_sender::send_grpc_msg(req).await {
         Ok(t) => println!("- SUCCESS -\n{}", t.into_inner().response),

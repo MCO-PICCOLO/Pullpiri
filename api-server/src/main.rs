@@ -1,4 +1,3 @@
-mod etcd;
 mod grpc_msg_handler;
 
 use crate::grpc_msg_handler::PiccoloGrpcServer;
@@ -7,7 +6,7 @@ use tonic::transport::Server;
 
 #[tokio::main]
 async fn main() {
-    let addr = common::DEFAULT_API_SERVER_OPEN.parse().unwrap();
+    let addr = common::apiserver::API_SERVER_OPEN.parse().unwrap();
     let piccolo_grpc_server = PiccoloGrpcServer::default();
 
     println!("Piccolod api-server listening on {}", addr);

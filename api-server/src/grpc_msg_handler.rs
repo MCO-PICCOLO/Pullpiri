@@ -1,10 +1,9 @@
-use crate::etcd;
-
 use common::apiserver::connection_server::Connection;
 use common::apiserver::request::RequestContent::{ControllerRequest, NodeRequest};
 use common::apiserver::to_server::ToServerContent::{Request, UpdateWorkload};
 use common::apiserver::{FromServer, ToServer};
-use common::statemanager::{connection_client::ConnectionClient, SendRequest, SendResponse};
+use common::etcd;
+use common::statemanager;
 
 #[derive(Default)]
 pub struct PiccoloGrpcServer {}
@@ -65,21 +64,25 @@ fn parse_to_server_command(req: &ToServer) -> String {
     ret
 }
 
-async fn send_dbus_to_bluechi(msg: &str) -> Result<tonic::Response<SendResponse>, tonic::Status> {
+async fn send_dbus_to_bluechi(
+    msg: &str,
+) -> Result<tonic::Response<statemanager::SendResponse>, tonic::Status> {
     println!("sending msg - '{}'\n", msg);
     let _ = etcd::put("asdf", "asdf").await;
     let _ = etcd::get("asdf").await;
     let _ = etcd::delete("asdf").await;
 
-    let mut client = ConnectionClient::connect(common::DEFAULT_STATE_MANAGER_CONNECT)
-        .await
-        .unwrap_or_else(|err| {
-            println!("FAIL - {}\ncannot connect to gRPC server", err);
-            std::process::exit(1);
-        });
+    let mut client = statemanager::connection_client::ConnectionClient::connect(
+        statemanager::STATE_MANAGER_CONNECT,
+    )
+    .await
+    .unwrap_or_else(|err| {
+        println!("FAIL - {}\ncannot connect to gRPC server", err);
+        std::process::exit(1);
+    });
 
     client
-        .send(tonic::Request::new(SendRequest {
+        .send(tonic::Request::new(statemanager::SendRequest {
             from: "api-server".to_owned(),
             request: msg.to_owned(),
         }))

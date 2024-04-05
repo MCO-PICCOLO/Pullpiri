@@ -2,8 +2,8 @@ mod cli_parser;
 mod msg_sender;
 
 use clap::Parser;
+use common::apiserver::{get_controller_command, get_node_command, get_unit_command};
 use common::apiserver::{ControllerCommand, NodeCommand, UpdateMethod};
-use common::{get_controller_command, get_node_command, get_unit_command};
 
 #[tokio::main]
 async fn main() {

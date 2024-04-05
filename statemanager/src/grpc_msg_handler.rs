@@ -1,7 +1,7 @@
-use crate::etcd;
 use crate::method_bluechi::{method_controller, method_node, method_unit};
-use api::proto::statemanager::connection_server::Connection;
-use api::proto::statemanager::{SendRequest, SendResponse};
+use common::etcd;
+use common::statemanager::connection_server::Connection;
+use common::statemanager::{SendRequest, SendResponse};
 
 #[derive(Default)]
 pub struct StateManagerGrpcServer {}
