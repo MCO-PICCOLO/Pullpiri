@@ -3,7 +3,7 @@ mod file_handler;
 mod msg_sender;
 
 use clap::Parser;
-use common::apiserver::ControllerCommand;
+use common::apiserver::{get_controller_command, ControllerCommand};
 
 #[tokio::main]
 async fn main() {
@@ -18,7 +18,7 @@ async fn main() {
         std::process::exit(1);
     });
 
-    let req = common::apiserver::get_controller_command(ControllerCommand::DaemonReload);
+    let req = get_controller_command(ControllerCommand::DaemonReload);
 
     match msg_sender::send_grpc_msg(req).await {
         Ok(t) => println!("- SUCCESS -\n{}", t.into_inner().response),
