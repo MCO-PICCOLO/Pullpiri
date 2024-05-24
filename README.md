@@ -30,7 +30,7 @@ The PICCOLO project does not cover several features, including implementations f
 PICCOLO project has a plan to support several projects as core orchestrator.
 Current version of PICCOLO could be running based on this project.
 
-[Eclipse Bluechi](https://github.com/eclipse-bluechi/bluechi/tree/main).
+- **[Eclipse Bluechi](https://github.com/eclipse-bluechi/bluechi/tree/main)**
 
 ## Getting started
 Refer to [Getting Started](/doc/docs/getting-started.md).
