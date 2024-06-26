@@ -34,7 +34,7 @@ spec:
     image: gcr.io/etcd-development/etcd:v3.5.11
     env:
     - name: HOST_IP
-      value: "192.168.50.239"
+      value: "10.157.19.218"
     command: ["/usr/local/bin/etcd"]
     args: ["--data-dir=/etcd-data", "--listen-peer-urls", "http://$(HOST_IP):2380", "--advertise-client-urls", "http://$(HOST_IP):2379", "--listen-client-urls", "http://$(HOST_IP):2379"]
     volumeMounts:
@@ -44,7 +44,7 @@ spec:
     image: localhost/piccolo-gateway:1.0
     env:
     - name: HOST_IP
-      value: "192.168.50.239"
+      value: "10.157.19.218"
   volumes:
   - name: piccolo-yaml
     hostPath:
