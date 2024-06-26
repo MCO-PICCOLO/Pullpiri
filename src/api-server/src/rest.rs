@@ -24,10 +24,10 @@ pub async fn list_scenario() -> Json<Vec<Scenario>> {
     Json(scenarios)
 }
 
-pub async fn inspect_scenario(name: &str) -> Json<Scenario> {
-    Json(Scenario {
-        name: name.to_string(),
-    })
+pub async fn inspect_scenario() -> String {
+    "Hello, Rust!\n".to_string()
 }
 
-pub async fn make_scenario() {}
+pub async fn make_scenario() {
+    
+}

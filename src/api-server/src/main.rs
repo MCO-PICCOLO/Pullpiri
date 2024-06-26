@@ -9,7 +9,8 @@ mod rest;
 use common::apiserver::scenario_connection_server::ScenarioConnectionServer;
 use tonic::transport::Server;
 
-use axum::{routing::get, Router};
+use axum::Router;
+use axum::routing::{get, post};
 
 #[tokio::main]
 async fn main() {
