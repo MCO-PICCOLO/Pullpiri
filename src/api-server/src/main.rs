@@ -6,11 +6,11 @@
 mod grpc;
 mod rest;
 
-use common::apiserver::scenario_connection_server::ScenarioConnectionServer;
-use tonic::transport::Server;
+//use common::apiserver::scenario_connection_server::ScenarioConnectionServer;
+//use tonic::transport::Server;
 
+use axum::routing::{delete, get, post};
 use axum::Router;
-use axum::routing::{get, post};
 
 #[tokio::main]
 async fn main() {
@@ -27,9 +27,10 @@ async fn main() {
         .await;*/
 
     let app = Router::new()
-        .route("/", get(rest::inspect_scenario))
+        .route("/scenario/:name", get(rest::inspect_scenario))
         .route("/list", get(rest::list_scenario))
-        .route("/create-scenario", post(rest::make_scenario));
+        .route("/create-scenario/:name", post(rest::make_scenario))
+        .route("/delete-scenario/:name", delete(rest::delete_scenario));
 
     let listener = tokio::net::TcpListener::bind("10.157.19.218:9090")
         .await

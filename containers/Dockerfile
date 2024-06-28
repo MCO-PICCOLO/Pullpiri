@@ -1,7 +1,14 @@
 # SPDX-FileCopyrightText: Copyright 2024 LG Electronics Inc.
 # SPDX-License-Identifier: Apache-2.0
 
-FROM rust:1.78.0-slim AS builder
+FROM rust:1.78.0-slim AS base
+
+RUN apt update -y && \
+    apt upgrade -y && \
+    apt install -y libdbus-1-dev pkg-config protobuf-compiler
+
+
+FROM base as builder
 WORKDIR /piccolo
 
 COPY ./src/Cargo.lock \
@@ -13,11 +20,7 @@ COPY ./src/statemanager/ /piccolo/statemanager
 COPY ./src/tools/ /piccolo/tools
 COPY ./src/yamlparser/ /piccolo/yamlparser
 
-
-RUN apt update -y && \
-    apt upgrade -y && \
-    apt install -y libdbus-1-dev pkg-config protobuf-compiler && \
-    cargo build --release
+RUN cargo build --release
 
 
 FROM alpine:3.19.1
