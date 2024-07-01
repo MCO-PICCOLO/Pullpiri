@@ -22,7 +22,7 @@ clean:
 .PHONY: image
 image:
 	podman build -t piccolo:1.0 -f containers/Dockerfile .
-#	podman build -t piccolo-gateway:1.0 -f containers/Dockerfile-gateway .
+	podman build -t piccolo-gateway:1.0 -f containers/Dockerfile-gateway .
 
 .PHONY: install
 install:
