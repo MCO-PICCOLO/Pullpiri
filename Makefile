@@ -29,6 +29,7 @@ install:
 	-mkdir /root/piccolo_yaml
 	-mkdir /etc/containers/systemd/piccolo/
 	-mkdir /etc/containers/systemd/piccolo/example
+	-cp -r ./piccolo.ini /etc/containers/systemd/piccolo/
 	-cp -r ./containers/piccolo.* /etc/containers/systemd/piccolo/
 	-cp -r ./etcd-data /etc/containers/systemd/piccolo/etcd-data/
 	systemctl daemon-reload
@@ -52,7 +53,7 @@ tinstall:
 tuninstall:
 	-systemctl stop qt-sender
 	-rm -rf /etc/containers/systemd/piccolo-test/
-	systemctl daemon-reload
-	systemctl stop version-display.service
+	-systemctl stop version-display.service
 	-rm -rf /etc/containers/systemd/version-display.kube
+	systemctl daemon-reload
 # Section for podman-kube workload - END
