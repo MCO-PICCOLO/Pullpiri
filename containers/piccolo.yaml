@@ -17,9 +17,14 @@ spec:
       mountPath: /root/piccolo_yaml
     - name: yaml-example
       mountPath: /piccolo/example
+    - name: config-path
+      mountPath: /piccolo/piccolo.ini
   - name: api-server
     image: localhost/piccolo:1.0
     command: ["/piccolo/api-server"]
+    volumeMounts:
+    - name: config-path
+      mountPath: /piccolo/piccolo.ini
   - name: statemanager
     image: localhost/piccolo:1.0
     command: ["/piccolo/statemanager"]
@@ -30,21 +35,22 @@ spec:
       mountPath: /run/dbus
     - name: systemd
       mountPath: /etc/containers/systemd
+    - name: config-path
+      mountPath: /piccolo/piccolo.ini
   - name: etcd
     image: gcr.io/etcd-development/etcd:v3.5.11
-    env:
-    - name: HOST_IP
-      value: "192.168.50.239"
     command: ["/usr/local/bin/etcd"]
-    args: ["--data-dir=/etcd-data", "--listen-peer-urls", "http://$(HOST_IP):2380", "--advertise-client-urls", "http://$(HOST_IP):2379", "--listen-client-urls", "http://$(HOST_IP):2379"]
+    args: ["--data-dir=/etcd-data"]
     volumeMounts:
     - name: etcd-data
       mountPath: /etcd-data
+    - name: config-path
+      mountPath: /piccolo/piccolo.ini
   - name: gateway
     image: localhost/piccolo-gateway:1.0
     env:
     - name: HOST_IP
-      value: "192.168.50.239"
+      value: "0.0.0.0"
   volumes:
   - name: piccolo-yaml
     hostPath:
@@ -61,3 +67,6 @@ spec:
   - name: etcd-data
     hostPath:
       path: /etc/containers/systemd/piccolo/etcd-data
+  - name: config-path
+    hostPath:
+      path: /etc/containers/systemd/piccolo/piccolo.ini

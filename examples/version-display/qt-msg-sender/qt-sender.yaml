@@ -24,7 +24,7 @@ spec:
       mountPath: /tmp/.X11-unix
     env:
     - name: HOST_IP
-      value: "192.168.50.239"
+      value: "0.0.0.0"
     - name: DISPLAY
       value: :0
   volumes:

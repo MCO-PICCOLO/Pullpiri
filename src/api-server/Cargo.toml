@@ -12,6 +12,9 @@ description = "A piccolo daemon that operates like API-server of k8s"
 
 [dependencies]
 common = { path = "../common" }
+axum = "0.7.5"
+futures = "0.3.30"
+serde = { version = "1.0", features = ["derive"] }
 tonic = "0.11.0"
 prost = "0.12.6"
 tokio = { version = "1.38.0", features = ["macros", "rt-multi-thread"] }
