@@ -30,7 +30,9 @@ async fn running_rest() {
         .merge(route::package::get_route())
         .merge(route::scenario::get_route());
 
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:9090").await.unwrap();
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:47099")
+        .await
+        .unwrap();
     println!("listening on {}", listener.local_addr().unwrap());
     axum::serve(listener, app).await.unwrap();
 }

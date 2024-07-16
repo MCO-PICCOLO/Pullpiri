@@ -39,8 +39,10 @@ pub async fn inspect_package(Path(name): Path<String>) -> impl IntoResponse {
         .unwrap()
 }
 
-pub async fn import_package(Path(name): Path<String>) -> impl IntoResponse {
+pub async fn import_package(Path(name): Path<String>, body: String) -> impl IntoResponse {
     importer::handle_package(&name).await;
+    println!("POST : package {name} is called.");
+    println!("       Path is {body}.\n");
     Response::builder()
         .status(StatusCode::OK)
         .body(Body::from(format!("name '{name}' is existed\n")))

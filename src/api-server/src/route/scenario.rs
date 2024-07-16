@@ -39,8 +39,10 @@ pub async fn inspect_scenario(Path(name): Path<String>) -> impl IntoResponse {
         .unwrap()
 }
 
-pub async fn import_scenario(Path(name): Path<String>) -> impl IntoResponse {
+pub async fn import_scenario(Path(name): Path<String>, body: String) -> impl IntoResponse {
     importer::handle_scenario(&name).await;
+    println!("POST : scenario {name} is called.\n");
+    println!("       Path is {body}.\n");
     Response::builder()
         .status(StatusCode::OK)
         .body(Body::from(format!("name '{name}' is existed\n")))
