@@ -3,79 +3,79 @@ use std::collections::HashMap;
 
 #[derive(Deserialize, Debug)]
 pub struct Container {
-    pub Id: String,
-    pub Names: Vec<String>,
-    pub Image: String,
-    pub State: String,
-    pub Status: String,
+    pub id: String,
+    pub names: Vec<String>,
+    pub image: String,
+    pub state: String,
+    pub status: String,
 }
 
 #[derive(Deserialize, Debug)]
 pub struct ContainerInspect {
-    pub Id: String,
-    pub Name: String,
-    pub State: ContainerState,
-    pub Config: ContainerConfig,
+    pub id: String,
+    pub name: String,
+    pub state: ContainerState,
+    pub config: ContainerConfig,
 }
 
 #[derive(Deserialize, Debug)]
 pub struct ContainerState {
-    pub Status: String,
-    pub Running: bool,
-    pub Paused: bool,
-    pub Restarting: bool,
-    pub OOMKilled: bool,
-    pub Dead: bool,
-    pub Pid: i32,
-    pub ExitCode: i32,
-    pub Error: String,
-    pub StartedAt: String,
-    pub FinishedAt: String,
+    pub status: String,
+    pub running: bool,
+    pub paused: bool,
+    pub restarting: bool,
+    pub oom_killed: bool,
+    pub dead: bool,
+    pub pid: i32,
+    pub exit_code: i32,
+    pub error: String,
+    pub started_at: String,
+    pub finished_at: String,
 }
 
 #[derive(Deserialize, Debug)]
 pub struct ContainerConfig {
-    pub Hostname: String,
-    pub Domainname: String,
-    pub User: String,
-    pub AttachStdin: bool,
-    pub AttachStdout: bool,
-    pub AttachStderr: bool,
-    pub ExposedPorts: Option<HashMap<String, serde_json::Value>>,
-    pub Tty: bool,
-    pub OpenStdin: bool,
-    pub StdinOnce: bool,
-    pub Env: Option<Vec<String>>,
-    pub Cmd: Option<Vec<String>>,
-    pub Image: String,
-    pub Volumes: Option<HashMap<String, serde_json::Value>>,
-    pub WorkingDir: String,
-    pub Entrypoint: String,
-    pub OnBuild: Option<Vec<String>>,
-    pub Labels: Option<HashMap<String, String>>,
+    pub hostname: String,
+    pub domainname: String,
+    pub user: String,
+    pub attach_stdin: bool,
+    pub attach_stdout: bool,
+    pub attach_stderr: bool,
+    pub exposed_ports: Option<HashMap<String, serde_json::Value>>,
+    pub tty: bool,
+    pub open_stdin: bool,
+    pub stdin_once: bool,
+    pub env: Option<Vec<String>>,
+    pub cmd: Option<Vec<String>>,
+    pub image: String,
+    pub volumes: Option<HashMap<String, serde_json::Value>>,
+    pub working_dir: String,
+    pub entrypoint: String,
+    pub on_build: Option<Vec<String>>,
+    pub labels: Option<HashMap<String, String>>,
 }
 
 #[derive(Deserialize, Debug)]
 pub struct Pod {
-    pub Id: String,
-    pub Name: String,
-    pub Namespace: String,
-    pub Status: String,
+    pub id: String,
+    pub name: String,
+    pub namespace: String,
+    pub status: String,
 }
 
 #[derive(Deserialize, Debug)]
 pub struct PodInspect {
-    pub Id: String,
-    pub Name: String,
-    pub Created: String,
-    pub Hostname: String,
-    pub State: String,
-    pub Containers: Vec<PodContainer>,
+    pub id: String,
+    pub name: String,
+    pub created: String,
+    pub hostname: String,
+    pub state: String,
+    pub containers: Vec<PodContainer>,
 }
 
 #[derive(Deserialize, Debug)]
 pub struct PodContainer {
-    pub Id: String,
-    pub Name: String,
-    pub State: String,
+    pub id: String,
+    pub name: String,
+    pub state: String,
 }

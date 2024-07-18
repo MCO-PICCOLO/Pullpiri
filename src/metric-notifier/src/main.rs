@@ -17,29 +17,29 @@ async fn pods_inspect() -> Result<Vec<PodInfo>, Box<dyn Error>> {
     let pod_inspect_list = get_pod_list().await?;
 
     let pod_inspect_infos: Vec<PodInfo> = try_join_all(pod_inspect_list.iter().map(|pod| {
-        let pod_id = pod.Id.clone();
+        let pod_id = pod.id.clone();
         async move {
             let inspect_info = get_pod_inspect(&pod_id).await?;
 
             let containers_map: Vec<PodInfoContainer> = inspect_info
-                .Containers
+                .containers
                 .into_iter()
                 .map(|container| {
                     // println!("Pod Response: {:?}", container);
                     PodInfoContainer {
-                        id: container.Id,
-                        name: container.Name,
-                        state: container.State,
+                        id: container.id,
+                        name: container.name,
+                        state: container.state,
                     }
                 })
                 .collect();
 
             Ok::<PodInfo, Box<dyn Error>>(PodInfo {
-                id: inspect_info.Id,
-                name: inspect_info.Name,
-                state: inspect_info.State,
-                host_name: inspect_info.Hostname,
-                created: inspect_info.Created,
+                id: inspect_info.id,
+                name: inspect_info.name,
+                state: inspect_info.state,
+                host_name: inspect_info.hostname,
+                created: inspect_info.created,
                 containers: containers_map,
             })
         }
@@ -55,66 +55,66 @@ async fn containers_inspect() -> Result<Vec<ContainerInfo>, Box<dyn Error>> {
     let container_list = get_container_list().await?;
     let container_infos: Vec<ContainerInfo> =
         try_join_all(container_list.iter().map(|container| {
-            let container_id = container.Id.clone();
+            let container_id = container.id.clone();
             async move {
                 let inspect_info = get_container_inspect(&container_id).await?;
                 let mut state_map = HashMap::new();
-                state_map.insert("Status".to_string(), inspect_info.State.Status);
+                state_map.insert("Status".to_string(), inspect_info.state.status);
                 state_map.insert(
                     "Running".to_string(),
-                    inspect_info.State.Running.to_string(),
+                    inspect_info.state.running.to_string(),
                 );
-                state_map.insert("Paused".to_string(), inspect_info.State.Paused.to_string());
+                state_map.insert("Paused".to_string(), inspect_info.state.paused.to_string());
                 state_map.insert(
                     "Restarting".to_string(),
-                    inspect_info.State.Restarting.to_string(),
+                    inspect_info.state.restarting.to_string(),
                 );
                 state_map.insert(
                     "OOMKilled".to_string(),
-                    inspect_info.State.OOMKilled.to_string(),
+                    inspect_info.state.oom_killed.to_string(),
                 );
-                state_map.insert("Dead".to_string(), inspect_info.State.Dead.to_string());
-                state_map.insert("Pid".to_string(), inspect_info.State.Pid.to_string());
+                state_map.insert("Dead".to_string(), inspect_info.state.dead.to_string());
+                state_map.insert("Pid".to_string(), inspect_info.state.pid.to_string());
                 state_map.insert(
                     "ExitCode".to_string(),
-                    inspect_info.State.ExitCode.to_string(),
+                    inspect_info.state.exit_code.to_string(),
                 );
-                state_map.insert("Error".to_string(), inspect_info.State.Error);
-                state_map.insert("StartedAt".to_string(), inspect_info.State.StartedAt);
-                state_map.insert("FinishedAt".to_string(), inspect_info.State.FinishedAt);
+                state_map.insert("Error".to_string(), inspect_info.state.error);
+                state_map.insert("StartedAt".to_string(), inspect_info.state.started_at);
+                state_map.insert("FinishedAt".to_string(), inspect_info.state.finished_at);
 
                 let mut config_map = HashMap::new();
-                config_map.insert("Hostname".to_string(), inspect_info.Config.Hostname);
-                config_map.insert("Domainname".to_string(), inspect_info.Config.Domainname);
-                config_map.insert("User".to_string(), inspect_info.Config.User);
+                config_map.insert("Hostname".to_string(), inspect_info.config.hostname);
+                config_map.insert("Domainname".to_string(), inspect_info.config.domainname);
+                config_map.insert("User".to_string(), inspect_info.config.user);
                 config_map.insert(
                     "AttachStdin".to_string(),
-                    inspect_info.Config.AttachStdin.to_string(),
+                    inspect_info.config.attach_stdin.to_string(),
                 );
                 config_map.insert(
                     "AttachStdout".to_string(),
-                    inspect_info.Config.AttachStdout.to_string(),
+                    inspect_info.config.attach_stdout.to_string(),
                 );
                 config_map.insert(
                     "AttachStderr".to_string(),
-                    inspect_info.Config.AttachStderr.to_string(),
+                    inspect_info.config.attach_stderr.to_string(),
                 );
-                config_map.insert("Tty".to_string(), inspect_info.Config.Tty.to_string());
+                config_map.insert("tty".to_string(), inspect_info.config.tty.to_string());
                 config_map.insert(
                     "OpenStdin".to_string(),
-                    inspect_info.Config.OpenStdin.to_string(),
+                    inspect_info.config.open_stdin.to_string(),
                 );
                 config_map.insert(
                     "StdinOnce".to_string(),
-                    inspect_info.Config.StdinOnce.to_string(),
+                    inspect_info.config.stdin_once.to_string(),
                 );
-                config_map.insert("Image".to_string(), inspect_info.Config.Image.clone());
-                config_map.insert("WorkingDir".to_string(), inspect_info.Config.WorkingDir);
+                config_map.insert("Image".to_string(), inspect_info.config.image.clone());
+                config_map.insert("WorkingDir".to_string(), inspect_info.config.working_dir);
 
                 Ok::<ContainerInfo, Box<dyn Error>>(ContainerInfo {
-                    id: inspect_info.Id,
-                    names: vec![inspect_info.Name],
-                    image: inspect_info.Config.Image.clone(),
+                    id: inspect_info.id,
+                    names: vec![inspect_info.name],
+                    image: inspect_info.config.image.clone(),
                     state: state_map,
                     config: config_map,
                 })

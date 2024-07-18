@@ -5,8 +5,8 @@ use std::error::Error;
 
 #[derive(Deserialize, Debug)]
 struct Image {
-    Id: String,
-    RepoTags: Option<Vec<String>>,
+    id: String,
+    repo_tags: Option<Vec<String>>,
 }
 
 pub async fn get_image_list() -> Result<Vec<String>, Box<dyn Error>> {
@@ -22,7 +22,7 @@ pub async fn get_image_list() -> Result<Vec<String>, Box<dyn Error>> {
 
     let image_list: Vec<String> = images
         .into_iter()
-        .filter_map(|image| image.RepoTags)
+        .filter_map(|image| image.repo_tags)
         .flatten()
         .collect();
 
