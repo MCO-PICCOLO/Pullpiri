@@ -55,7 +55,6 @@ pub struct ContainerConfig {
     pub Labels: Option<HashMap<String, String>>,
 }
 
-
 #[derive(Deserialize, Debug)]
 pub struct Pod {
     pub Id: String,

@@ -14,7 +14,7 @@ pub async fn handle_package(name: &str) {
     // TODO
     // 1. download tar file (/root/piccolo_yaml/ ~~.tar)
     // 2. decompress tar file
-    // 3. parsing - model, 
+    // 3. parsing - model,
     // ***** make pod.yaml .kube
     // 4. send result (name, model, network, volume)
 }
@@ -31,11 +31,12 @@ pub async fn handle_scenario(name: &str) {
     // TODO
     // 1. download yaml file : reqwest crate
     // 2. /root/piccolo_yaml/    scenarios/     yaml
-    _= downloader::download(&full_url, &full_save_path);
+    _ = downloader::download(&full_url, &full_save_path);
     let temp_path = PathBuf::from(full_save_path);
 
     // 3. parsing - action, condition, target
-    let scenario: Result<common::apiserver::scenario::Scenario, Box<dyn Error>> = parser::scenario::scenario_parse(&temp_path);
+    let scenario: Result<common::apiserver::scenario::Scenario, Box<dyn Error>> =
+        parser::scenario::scenario_parse(&temp_path);
 
     // 4. send result (name, action, condition, target, full)
     // grpc send

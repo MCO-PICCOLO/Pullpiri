@@ -1,7 +1,7 @@
+use crate::metric::{Pod, PodInspect};
 use hyper::{Client, Uri};
 use hyperlocal::{UnixConnector, Uri as UnixUri};
 use std::error::Error;
-use crate::metric::{PodInspect, Pod};
 
 pub async fn get_pod_list() -> Result<Vec<Pod>, Box<dyn Error>> {
     let connector = UnixConnector;
@@ -22,7 +22,11 @@ pub async fn get_pod_inspect(pod_id: &str) -> Result<PodInspect, Box<dyn Error>>
     let connector = UnixConnector;
     let client = Client::builder().build::<_, hyper::Body>(connector);
 
-    let uri: Uri = UnixUri::new("/run/podman/podman.sock", &format!("/v1.0.0/libpod/pods/{}/json", pod_id)).into();
+    let uri: Uri = UnixUri::new(
+        "/run/podman/podman.sock",
+        &format!("/v1.0.0/libpod/pods/{}/json", pod_id),
+    )
+    .into();
 
     let res = client.get(uri).await?;
 

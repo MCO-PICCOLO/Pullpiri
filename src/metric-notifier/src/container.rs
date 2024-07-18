@@ -1,14 +1,17 @@
-
+use crate::metric::{Container, ContainerInspect};
 use hyper::{Client, Uri};
 use hyperlocal::{UnixConnector, Uri as UnixUri};
 use std::error::Error;
-use crate::metric::{Container, ContainerInspect};
 
 pub async fn get_container_list() -> Result<Vec<Container>, Box<dyn Error>> {
     let connector = UnixConnector;
     let client = Client::builder().build::<_, hyper::Body>(connector);
 
-    let uri: Uri = UnixUri::new("/var/run/podman/podman.sock", "/v1.0.0/libpod/containers/json").into();
+    let uri: Uri = UnixUri::new(
+        "/var/run/podman/podman.sock",
+        "/v1.0.0/libpod/containers/json",
+    )
+    .into();
 
     let res = client.get(uri).await?;
 
@@ -23,7 +26,11 @@ pub async fn get_container_inspect(container_id: &str) -> Result<ContainerInspec
     let connector = UnixConnector;
     let client = Client::builder().build::<_, hyper::Body>(connector);
 
-    let uri: Uri = UnixUri::new("/var/run/podman/podman.sock", &format!("/v1.0.0/libpod/containers/{}/json", container_id)).into();
+    let uri: Uri = UnixUri::new(
+        "/var/run/podman/podman.sock",
+        &format!("/v1.0.0/libpod/containers/{}/json", container_id),
+    )
+    .into();
 
     let res = client.get(uri).await?;
 
@@ -33,6 +40,3 @@ pub async fn get_container_inspect(container_id: &str) -> Result<ContainerInspec
 
     Ok(container_inspect)
 }
-
-
-

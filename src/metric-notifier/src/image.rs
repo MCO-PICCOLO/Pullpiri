@@ -28,4 +28,3 @@ pub async fn get_image_list() -> Result<Vec<String>, Box<dyn Error>> {
 
     Ok(image_list)
 }
-
