@@ -129,8 +129,11 @@ async fn containers_inspect() -> Result<Vec<ContainerInfo>, Box<dyn Error>> {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
-    let d = pods_inspect().await?;
-    println!("pod inspect info: {:#?}", d);
+    let pods: Vec<PodInfo> = pods_inspect().await?;
+    println!("pod inspect info: {:#?}", pods);
+
+    let containers: Vec<ContainerInfo> = containers_inspect().await?;
+    println!("container inspect info: {:#?}", containers);
 
     Ok(())
 }
