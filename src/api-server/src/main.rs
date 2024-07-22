@@ -42,5 +42,5 @@ async fn main() {
     let f_grpc = running_grpc();
     let f_rest = running_rest();
 
-    futures::join!(f_grpc, f_rest);
+    tokio::join!(f_grpc, f_rest);
 }
