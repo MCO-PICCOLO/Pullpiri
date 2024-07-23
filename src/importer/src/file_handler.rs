@@ -2,9 +2,6 @@
  * SPDX-FileCopyrightText: Copyright 2024 LG Electronics Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-
-use common::spec::pod::Pod;
-use common::spec::scenario::Action;
 use std::error::Error;
 use std::ffi::OsStr;
 use std::fs;
@@ -24,9 +21,9 @@ pub fn get_absolute_file_path(path: &str) -> Result<PathBuf, Box<dyn Error>> {
     }
 }
 
-fn make_kube_file(dir: &str, name: &str, version: &str) -> Result<(), Box<dyn Error>> {
-    let kube_file_path = format!("{}/{}_{}.kube", dir, name, version);
-    let yaml_file_path = format!("{}/{}_{}.yaml", dir, name, version);
+fn make_kube_file(dir: &str, name: &str) -> Result<(), Box<dyn Error>> {
+    let kube_file_path = format!("{}/{}.kube", dir, name);
+    let yaml_file_path = format!("{}/{}.yaml", dir, name);
     let mut kube_file = fs::File::create(kube_file_path)?;
 
     let kube_contents = format!(
@@ -51,35 +48,31 @@ Yaml={}
 fn make_yaml_file(
     dir: &str,
     name: &str,
-    version: &str,
-    action: &Action,
+    model: &str,
 ) -> Result<(), Box<dyn Error>> {
-    let yaml_file_path = format!("{}/{}_{}.yaml", dir, name, version);
+    let yaml_file_path = format!("{}/{}.yaml", dir, name);
     let mut yaml_file = fs::File::create(yaml_file_path)?;
 
-    let pod = Pod::new(name, action.get_podspec());
-
-    let yaml_contents = serde_yaml::to_string(&pod)?;
+    let yaml_contents = serde_yaml::to_string(model)?;
     yaml_file.write_all(yaml_contents.as_bytes())?;
 
     Ok(())
 }
 
-pub fn perform(name: &str, action: &Action) -> Result<(), Box<dyn Error>> {
+pub fn perform(name: &str, model: &str) -> Result<(), Box<dyn Error>> {
     let directory = format!("{}{}", common::get_conf("YAML_STORAGE"), name);
     fs::create_dir_all(&directory)?;
 
-    let image = action.get_image();
+    // let image = action.get_image();
+    // let version = image
+    //     .split(':')
+    //     .collect::<Vec<&str>>()
+    //     .last()
+    //     .copied()
+    //     .ok_or("cannot find version")?;
 
-    let version = image
-        .split(':')
-        .collect::<Vec<&str>>()
-        .last()
-        .copied()
-        .ok_or("cannot find version")?;
-
-    make_kube_file(&directory, name, version)?;
-    make_yaml_file(&directory, name, version, action)?;
+    make_kube_file(&directory, name)?;
+    make_yaml_file(&directory, name, model)?;
 
     Ok(())
 }

@@ -11,3 +11,8 @@ spec:
       resources:
         volume: vd-volume
         network: vd-network
+    - name: version-display2
+      resources:
+        volume: vd-volume2
+        network: vd-network2
+

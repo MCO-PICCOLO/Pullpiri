@@ -54,7 +54,7 @@ pub async fn make_action_for_scenario(key: &str) -> Result<String, Box<dyn Error
     let value_package = etcd::get(&key_package).await?;
     let package: common::spec::package::Package = serde_yaml::from_str(&value_package)?;
 
-    let mut list_model = package.get_models();
+    let mut list_model = package.get_model_name();
     // TODO : fix it for multiple models (pods)
     let key_model = format!("model/{}", list_model.pop().unwrap());
     let value_model = etcd::get(&key_model).await?;

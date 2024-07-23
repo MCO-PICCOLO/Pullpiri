@@ -2,44 +2,44 @@
  * SPDX-FileCopyrightText: Copyright 2024 LG Electronics Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-
-use std::{error::Error, path::PathBuf};
-
 mod downloader;
 mod parser;
+mod file_handler;
+mod decompress;
+use std::error::Error;
 
-pub async fn handle_package(name: &str) {
+pub async fn handle_package(name: &str) -> Result<parser::package::Package, Box<dyn std::error::Error>>{
+//url path
     let base_url = common::get_conf("DOC_REGISTRY");
     let full_url: String = format!("{}/packages/{}.tar", base_url, name);
-    // TODO
-    // 1. download tar file (/root/piccolo_yaml/ ~~.tar)
-    // 2. decompress tar file
-    // 3. parsing - model,
-    // ***** make pod.yaml .kube
-    // 4. send result (name, model, network, volume)
+
+//save path
+    let save_path: String = common::get_conf("YAML_STORAGE");
+    let full_save_path = format!("{}/scenarios/{}.tar", save_path, name);
+
+//download, decompress    
+    let _= downloader::download(&full_url, &full_save_path);
+    let _= decompress::decompress(&full_save_path);
+
+//parsing
+    let parsing_path = format!("{}/scenarios/{}",save_path, name);
+    let package: Result<parser::package::Package, Box<dyn Error>> = parser::package::package_parse(&parsing_path);
+
+    Ok(package?)
 }
 
-pub async fn handle_scenario(name: &str) {
+pub async fn handle_scenario(name: &str) -> Result<parser::scenario::Scenario, Box<dyn std::error::Error>> {
     let base_url = common::get_conf("DOC_REGISTRY");
     let full_url = format!("{}/scenarios/{}.yaml", base_url, name);
-
-    //TODO name 명을 meta data의 name으로 해야 할 것 같은데 ? parsing후에 save하자.
 
     let save_path: String = common::get_conf("YAML_STORAGE");
     let full_save_path = format!("{}/scenarios/{}.yaml", save_path, name);
 
-    // TODO
-    // 1. download yaml file : reqwest crate
-    // 2. /root/piccolo_yaml/    scenarios/     yaml
-    _ = downloader::download(&full_url, &full_save_path);
-    let temp_path = PathBuf::from(full_save_path);
+    let _= downloader::download(&full_url, &full_save_path);
 
-    // 3. parsing - action, condition, target
-    let scenario: Result<common::apiserver::scenario::Scenario, Box<dyn Error>> =
-        parser::scenario::scenario_parse(&temp_path);
+    let scenario: Result<parser::scenario::Scenario, Box<dyn Error>> = parser::scenario::scenario_parse(&full_save_path);
 
-    // 4. send result (name, action, condition, target, full)
-    // grpc send
+    Ok(scenario?)
 }
 
 /*

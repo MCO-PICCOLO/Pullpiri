@@ -1,3 +1,5 @@
+use crate::spec::workload::podspec;
+
 use super::MetaData;
 
 #[allow(non_snake_case)]
@@ -11,5 +13,5 @@ pub struct Network {
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize, PartialEq)]
 struct NetworkSpec {
-    dummy: String,
+    spec: Option<Vec<podspec::Port>>,
 }

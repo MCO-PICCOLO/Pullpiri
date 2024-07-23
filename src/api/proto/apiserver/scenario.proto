@@ -11,8 +11,6 @@ message Scenario {
   string name = 1;
   string conditions = 2;
   string actions = 3;
-  string targets = 4;
-  string scene = 5;
 }
 
 message Response {
