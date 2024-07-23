@@ -1,4 +1,7 @@
-use std::{fs::File, io::{copy, BufWriter}};
+use std::{
+    fs::File,
+    io::{copy, BufWriter},
+};
 
 use reqwest;
 

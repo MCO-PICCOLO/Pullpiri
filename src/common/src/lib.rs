@@ -20,7 +20,22 @@ fn init_conf() -> config::Config {
     config::Config::builder()
         .add_source(config::File::with_name("piccolo"))
         .build()
-        .unwrap()
+        .unwrap_or(
+            config::Config::builder()
+                .set_default("HOST_IP", "0.0.0.0")
+                .unwrap()
+                .set_default("YAML_STORAGE", "/root/piccolo_yaml/")
+                .unwrap()
+                .set_default("HOST_NODE", "master")
+                .unwrap()
+                .set_default(
+                    "DOC_REGISTRY",
+                    "http://mod.lge.com/hub/piccolo/piccolo-utils/documents-registry/-/raw/main",
+                )
+                .unwrap()
+                .build()
+                .unwrap(),
+        )
 }
 
 pub fn get_conf(key: &str) -> String {

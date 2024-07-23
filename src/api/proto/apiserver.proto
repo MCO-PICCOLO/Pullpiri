@@ -17,5 +17,5 @@ service ScenarioConnection {
 service MetricNotifier {
   rpc SendImageList (metric_notifier.ImageList) returns (metric_notifier.Response);
   rpc SendContainerList (metric_notifier.ContainerList) returns (metric_notifier.Response);
-  rpc SendPodInspectInfo (metric_notifier.PodInspectInfoList) returns (metric_notifier.Response);
+  rpc SendPodList (metric_notifier.PodList) returns (metric_notifier.Response);
 }
