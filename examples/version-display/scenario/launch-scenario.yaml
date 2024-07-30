@@ -16,17 +16,5 @@ spec:
       value: "rt/piccolo/gear_state"
   actions:
     - operation: launch
-      podSpec:
-        containers:
-        - name: display-container
-          image: localhost/version-display:1.0
-          volumeMounts:
-          - name: x11
-            mountPath: /tmp/.X11-unix
-          env:
-          - name: DISPLAY
-            value: :0
-        volumes:
-        - name: x11
-          hostPath:
-            path: /tmp/.X11-unix
+  targets:
+    - name: "package name"

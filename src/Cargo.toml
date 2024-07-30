@@ -10,7 +10,8 @@ members = [
     "statemanager",
     "api",
     "common",
-    "yamlparser",
+    "importer",
+    "metric-notifier",
 #    "gateway",
 ]
 

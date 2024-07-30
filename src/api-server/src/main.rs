@@ -4,13 +4,12 @@
  */
 
 mod grpc;
-mod rest;
+mod manager;
+mod route;
 
+use axum::Router;
 use common::apiserver::scenario_connection_server::ScenarioConnectionServer;
 use tonic::transport::Server;
-
-use axum::routing::{delete, get, post};
-use axum::Router;
 
 async fn running_grpc() {
     let addr = common::apiserver::open_server()
@@ -28,12 +27,10 @@ async fn running_grpc() {
 
 async fn running_rest() {
     let app = Router::new()
-        .route("/scenario/:name", get(rest::inspect_scenario))
-        .route("/list", get(rest::list_scenario))
-        .route("/create-scenario/:name", post(rest::make_scenario))
-        .route("/delete-scenario/:name", delete(rest::delete_scenario));
+        .merge(route::package::get_route())
+        .merge(route::scenario::get_route());
 
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:9090")
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:47099")
         .await
         .unwrap();
     println!("listening on {}", listener.local_addr().unwrap());
@@ -45,5 +42,5 @@ async fn main() {
     let f_grpc = running_grpc();
     let f_rest = running_rest();
 
-    futures::join!(f_grpc, f_rest);
+    tokio::join!(f_grpc, f_rest);
 }

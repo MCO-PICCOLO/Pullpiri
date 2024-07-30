@@ -7,6 +7,5 @@ resolver = "2"
 
 members = [
     "dds-idl-gen",
-    "test-grpc-sender",
     "workloadconverter",
 ]

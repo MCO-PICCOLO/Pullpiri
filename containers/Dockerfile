@@ -1,14 +1,12 @@
 # SPDX-FileCopyrightText: Copyright 2024 LG Electronics Inc.
 # SPDX-License-Identifier: Apache-2.0
 
-FROM rust:1.78.0-slim AS base
+FROM rust:1.78.0-slim AS builder
 
 RUN apt update -y && \
     apt upgrade -y && \
-    apt install -y libdbus-1-dev pkg-config protobuf-compiler
+    apt install -y libdbus-1-dev pkg-config protobuf-compiler libssl-dev
 
-
-FROM base as builder
 WORKDIR /piccolo
 
 COPY ./src/Cargo.lock \
@@ -16,8 +14,9 @@ COPY ./src/Cargo.lock \
 COPY ./src/api /piccolo/api
 COPY ./src/api-server/ /piccolo/api-server
 COPY ./src/common/ /piccolo/common
+COPY ./src/importer/ /piccolo/importer
 COPY ./src/statemanager/ /piccolo/statemanager
-COPY ./src/yamlparser/ /piccolo/yamlparser
+COPY ./src/metric-notifier/ /piccolo/metric-notifier
 
 RUN cargo build --release
 
@@ -29,8 +28,7 @@ COPY ./piccolo.ini .
 
 COPY --from=builder \
     /piccolo/target/release/api-server \
-    /piccolo/target/release/statemanager \
-    /piccolo/target/release/yamlparser ./
+    /piccolo/target/release/statemanager ./
 
 COPY --from=builder /lib64 /lib64
 COPY --from=builder \

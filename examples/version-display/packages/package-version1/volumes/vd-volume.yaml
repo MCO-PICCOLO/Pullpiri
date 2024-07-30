@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Volume
+metadata:
+  label: null
+  name: vd-volume
+spec:
+  volumes:
+    - name: example-volume
+      hostPath:
+        path: /path/on/host  

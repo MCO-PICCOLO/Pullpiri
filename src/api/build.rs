@@ -10,6 +10,5 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     tonic_build::compile_protos("proto/apiserver/metric_notifier.proto")?;
     tonic_build::compile_protos("proto/statemanager.proto")?;
     tonic_build::compile_protos("proto/gateway.proto")?;
-    tonic_build::compile_protos("proto/yamlparser.proto")?;
     Ok(())
 }

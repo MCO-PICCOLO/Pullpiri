@@ -10,16 +10,6 @@ message ContainerList {
   repeated ContainerInfo containers = 1;
 }
 
-message PodInspectInfoList {
-  repeated PodInspectInfo pod_inspect_infos = 1;
-}
-
-message PodInspectInfo {
-  string id = 1;
-  map<string, string> state = 2;
-  map<string, string> config = 3;
-}
-
 message ContainerInfo {
   string id = 1;
   repeated string names = 2;
@@ -28,7 +18,25 @@ message ContainerInfo {
   map<string, string> config = 5;
 }
 
+message PodList {
+  repeated PodInfo pods = 1;
+}
+
+message PodInfo{
+  string id = 1;
+  string name = 2;
+  repeated PodInfoContainer containers = 3;  
+  string state = 4;  
+  string host_name = 6;
+  string created = 7;
+}
+
+message PodInfoContainer{
+  string id = 1;
+  string name = 2;
+  string state = 3;
+}
+
 message Response {
   bool success = 1;
 }
-

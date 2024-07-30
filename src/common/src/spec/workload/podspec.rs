@@ -2,7 +2,7 @@
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize, PartialEq)]
 pub struct PodSpec {
     containers: Vec<Container>,
-    volumes: Option<Vec<Volume>>,
+    pub volumes: Option<Vec<Volume>>,
     initContainers: Option<Vec<Container>>,
     restartPolicy: Option<String>,
     terminationGracePeriodSeconds: Option<i32>,
@@ -72,5 +72,9 @@ impl PodSpec {
     pub fn get_image(&self) -> String {
         //self.podSpec.containers[0].image.clone()
         self.containers[0].image.clone()
+    }
+
+    pub fn get_volume(&mut self) -> Option<Vec<Volume>> {
+        self.volumes.clone()
     }
 }

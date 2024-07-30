@@ -17,6 +17,7 @@ impl Pod {
             kind: "Pod".to_string(),
             metadata: MetaData {
                 name: name.to_string(),
+                labels: None,
             },
             spec: podspec,
         }

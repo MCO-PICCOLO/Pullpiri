@@ -7,7 +7,7 @@ use crate::method_bluechi::send_dbus;
 use common::etcd;
 use common::statemanager::connection_server::Connection;
 use common::statemanager::{SendRequest, SendResponse};
-use std::io::{Error, ErrorKind};
+use std::error::Error;
 use std::{thread, time::Duration};
 
 const SYSTEMD_PATH: &str = "/etc/containers/systemd/";
@@ -31,7 +31,10 @@ impl Connection for StateManagerGrpcServer {
         if from == i32::from(common::constants::PiccoloModuleName::Gateway) {
             match make_action_for_scenario(&command).await {
                 Ok(v) => Ok(tonic::Response::new(SendResponse { response: v })),
-                Err(e) => Err(tonic::Status::new(tonic::Code::Unavailable, e.to_string())),
+                Err(e) => {
+                    println!("{:?}", e);
+                    Err(tonic::Status::new(tonic::Code::Unavailable, e.to_string()))
+                }
             }
         } else {
             Err(tonic::Status::new(
@@ -42,32 +45,48 @@ impl Connection for StateManagerGrpcServer {
     }
 }
 
-pub async fn make_action_for_scenario(key: &str) -> Result<String, Box<dyn std::error::Error>> {
-    let value = etcd::get(key).await?;
-    /*let value = r#"---
-    operation: update
-    image: "sdv.lge.com/library/passive-redundant-pong:0.2""#;*/
+pub async fn make_action_for_scenario(key: &str) -> Result<String, Box<dyn Error>> {
+    let key_action = format!("{key}/actions");
+    let key_target = format!("{key}/targets");
+    let value_action = etcd::get(&key_action).await?;
+    let value_target = etcd::get(&key_target).await?;
+    let action: common::spec::scenario::Action = serde_yaml::from_str(&value_action)?;
+    let target: common::spec::scenario::Target = serde_yaml::from_str(&value_target)?;
 
-    let action: common::spec::scenario::Action = serde_yaml::from_str(&value)?;
-    let name = key.split('/').collect::<Vec<&str>>()[1];
+    let target_name = target.get_name();
+    let key_model = format!("package/{}/models", &target_name);
+    let value_model = etcd::get(&key_model).await?;
+    let model: common::spec::package::model::Model = serde_yaml::from_str(&value_model)?;
+
+    let model_name = model.get_name();
     let operation = &*action.get_operation();
-    let image = action.get_image();
 
-    println!(
-        "name : {}\noperation : {}\nimage: {}\n",
-        name, operation, image
-    );
+    println!("model name : {}\noperation : {}\n", model_name, operation);
 
     match operation {
         "launch" => {
-            make_and_start_new_symlink(name, &image).await?;
+            // make symlink & reload
+            make_symlink_and_reload(&model_name, &target_name).await?;
+            // start service
+            try_service(&model_name, "START").await?;
         }
         "terminate" => {
-            delete_symlink_and_reload(name).await?;
+            // stop service
+            try_service(&model_name, "STOP").await?;
+            thread::sleep(Duration::from_secs(5));
+            // delete symlink & reload
+            delete_symlink_and_reload(&model_name).await?;
         }
         "update" | "rollback" => {
-            delete_symlink_and_reload(name).await?;
-            make_and_start_new_symlink(name, &image).await?;
+            // delete symlink & reload
+            delete_symlink_and_reload(&model_name).await?;
+            // make symlink & reload
+            make_symlink_and_reload(&model_name, &target_name).await?;
+            // restart service
+            try_service(&model_name, "RESTART").await?;
+        }
+        "download" => {
+            println!("do something");
         }
         _ => {
             return Err("not supported operation".into());
@@ -77,47 +96,40 @@ pub async fn make_action_for_scenario(key: &str) -> Result<String, Box<dyn std::
     Ok(format!("Done : {}\n", operation))
 }
 
-async fn delete_symlink_and_reload(name: &str) -> Result<(), Box<dyn std::error::Error>> {
-    let _ = send_dbus(vec![
-        "STOP",
-        &common::get_conf("HOST_NODE"),
-        &format!("{}.service", name),
-    ])
-    .await;
-    thread::sleep(Duration::from_millis(100));
-    let kube_symlink_path = format!("{}{}.kube", SYSTEMD_PATH, name);
+async fn delete_symlink_and_reload(model_name: &str) -> Result<(), Box<dyn Error>> {
+    let kube_symlink_path = format!("{}{}.kube", SYSTEMD_PATH, model_name);
     let _ = std::fs::remove_file(kube_symlink_path);
+
     send_dbus(vec!["DAEMON_RELOAD"]).await?;
     thread::sleep(Duration::from_millis(100));
+
     Ok(())
 }
 
-async fn make_and_start_new_symlink(
-    name: &str,
-    image: &str,
+async fn make_symlink_and_reload(
+    model_name: &str,
+    target_name: &str,
 ) -> Result<(), Box<dyn std::error::Error>> {
-    let version = image
-        .split(':')
-        .collect::<Vec<&str>>()
-        .last()
-        .copied()
-        .ok_or(Error::new(ErrorKind::NotFound, "cannot find image version"))?;
-
     let original = format!(
-        "{0}{1}/{1}_{2}.kube",
+        "{0}/packages/{1}/{2}/{2}.kube",
         common::get_conf("YAML_STORAGE"),
-        name,
-        version
+        target_name,
+        model_name
     );
-    let link = format!("{}{}.kube", SYSTEMD_PATH, name);
+    let link = format!("{}{}.kube", SYSTEMD_PATH, model_name);
     std::os::unix::fs::symlink(original, link)?;
 
     send_dbus(vec!["DAEMON_RELOAD"]).await?;
     thread::sleep(Duration::from_millis(100));
+
+    Ok(())
+}
+
+async fn try_service(model_name: &str, act: &str) -> Result<(), Box<dyn std::error::Error>> {
     send_dbus(vec![
-        "START",
+        act,
         &common::get_conf("HOST_NODE"),
-        &format!("{}.service", name),
+        &format!("{}.service", model_name),
     ])
     .await?;
     thread::sleep(Duration::from_millis(100));

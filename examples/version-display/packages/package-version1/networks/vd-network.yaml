@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Network
+metadata:
+  label: null
+  name: vd-network
+spec:
+  dummy: network123

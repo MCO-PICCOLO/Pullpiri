@@ -24,7 +24,8 @@ void PiccoloGatewayParser::parse(PiccoloEvent* pe)
 
 	etcd::Client etcd(etcdAddr);
 	std::string conditions = std::string(pe->name).append("/conditions");
-	std::string action = std::string(pe->name).append("/action");
+	//std::string action = std::string(pe->name).append("/action");
+	std::string action = std::string(pe->name);
 	pe->actionKey = action;
 	etcd::Response conditionsResponse = etcd.get(conditions).get();
 

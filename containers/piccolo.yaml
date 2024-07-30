@@ -9,20 +9,12 @@ metadata:
 spec:
   hostNetwork: true
   containers:
-  - name: yamlparser
-    image: localhost/piccolo:1.0
-    command: ["/piccolo/yamlparser"]
-    volumeMounts:
-    - name: piccolo-yaml
-      mountPath: /root/piccolo_yaml
-    - name: yaml-example
-      mountPath: /piccolo/example
-    - name: config-path
-      mountPath: /piccolo/piccolo.ini
   - name: api-server
     image: localhost/piccolo:1.0
     command: ["/piccolo/api-server"]
     volumeMounts:
+    - name: piccolo-yaml
+      mountPath: /root/piccolo_yaml
     - name: config-path
       mountPath: /piccolo/piccolo.ini
   - name: statemanager
@@ -40,7 +32,7 @@ spec:
   - name: etcd
     image: gcr.io/etcd-development/etcd:v3.5.11
     command: ["/usr/local/bin/etcd"]
-    args: ["--data-dir=/etcd-data"]
+#    args: ["--data-dir=/etcd-data"]
     volumeMounts:
     - name: etcd-data
       mountPath: /etcd-data
@@ -61,9 +53,6 @@ spec:
   - name: systemd
     hostPath:
       path: /etc/containers/systemd
-  - name: yaml-example
-    hostPath:
-      path: /etc/containers/systemd/piccolo/example
   - name: etcd-data
     hostPath:
       path: /etc/containers/systemd/piccolo/etcd-data
