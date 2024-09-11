@@ -42,7 +42,7 @@
 
   - ###### LT (string)
 
-     The `st` expression is useful for comparing if a specific value is less than or equal to a certain threshold.
+     The `lt` expression is useful for comparing if a specific value is less than or equal to a certain threshold.
 
 
 
@@ -77,8 +77,6 @@
   required
 
 - ###### Description
-
-  This field is useful when writing complex scenarios using `and` and `or` combinations. The default is `andCombination`.
 
   - ###### operands.type (string)
 
