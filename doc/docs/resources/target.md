@@ -1,5 +1,3 @@
-Scenario Spec
-
 # Target
 
 Targets(List)

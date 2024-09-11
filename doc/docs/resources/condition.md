@@ -1,5 +1,3 @@
-Scenario Spec
-
 # Conditions
 
 - Conditions(List)
