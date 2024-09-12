@@ -21,7 +21,7 @@ services:
 #    command: /piccolo/dummy-light-controller
   light-dev:
     network_mode: "host"
-    image: sdv.lge.com/library/dummy_light_dev:py0.1
+    image: sdv.lge.com/library/dummy_light_dev:py0.3
     command: python3 -u /app/main.py
   light-show:
     network_mode: "host"
