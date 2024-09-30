@@ -36,15 +36,19 @@ def send():
         topic = Topic(participant, "/rt/piccolo/Light_State", LightState.DataType)
         writer = DataWriter(participant, topic)
 
-    time.sleep(5)
+    time.sleep(2)
 
+    count = 0
     while True:
         l.acquire()
         data = LightState.DataType(light)
         l.release()
-        print("send")
+        if count % 5 == 0:
+            print("send")
         writer.write(data)
-        time.sleep(3)
+        time.sleep(0.2)
+        count += 1
+        count %= 5
 
 
 if __name__ == '__main__':

@@ -10,7 +10,7 @@ spec:
   hostNetwork: true
   containers:
   - name: light-dev
-    image: sdv.lge.com/library/dummy_light_dev:py0.1
+    image: sdv.lge.com/library/dummy_light_dev:py0.3
     command: ["python3", "-u", "/app/main.py"]
   - name: light-show
     image: sdv.lge.com/library/dummy_light_show:py0.1

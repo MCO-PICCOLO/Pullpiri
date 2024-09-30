@@ -29,6 +29,8 @@ impl Manager {
     }
 
     pub async fn run(&mut self) {
+        self.remove_filter().await;
+
         tokio::spawn(launch_dds("gear", self.tx_dds.clone()));
         tokio::spawn(launch_dds("day", self.tx_dds.clone()));
         tokio::spawn(launch_dds("light", self.tx_dds.clone()));
@@ -79,9 +81,9 @@ impl Manager {
             // TODO get condition and DDS criteria
             if Some(false) == scenario.route {
                 println!("#####\nscenario is deleted\n#####\n");
-                let _ = common::etcd::delete_all("scenario").await;
-                let _ = common::etcd::delete_all("condition").await;
-                let _ = common::etcd::delete_all("action").await;
+                //let _ = common::etcd::delete_all("scenario").await;
+                //let _ = common::etcd::delete_all("condition").await;
+                //let _ = common::etcd::delete_all("action").await;
                 //self.remove_filter(0).await;
                 self.remove_filter().await;
             } else if Some(true) == scenario.route {
@@ -121,8 +123,10 @@ impl Manager {
         )
         .await;
 
-        let gear_current = self.gear.lock().await;
-        let day_current = self.day.lock().await;
+        let arc_gear_current = Arc::clone(&self.gear);
+        let arc_day_current = Arc::clone(&self.day);
+        let gear_current = arc_gear_current.lock().await;
+        let day_current = arc_day_current.lock().await;
 
         let f = Filter::new(
             &scenario.name,
@@ -149,6 +153,10 @@ impl Manager {
     }*/
 
     async fn remove_filter(&mut self) {
+        let _ = common::etcd::delete_all("scenario").await;
+        let _ = common::etcd::delete_all("condition").await;
+        let _ = common::etcd::delete_all("action").await;
+
         let arc_filters = Arc::clone(&self.filters);
         let mut filters = arc_filters.lock().await;
         if !filters.is_empty() {
