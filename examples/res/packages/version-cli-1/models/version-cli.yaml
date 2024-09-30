@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: version-cli
+  labels:
+    app: version-cli
+spec:
+  containers:
+    - name: cli-container
+      image: localhost/version-cli:1.0
+  terminationGracePeriodSeconds: 0

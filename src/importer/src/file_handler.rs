@@ -4,8 +4,8 @@
  */
 use std::error::Error;
 use std::ffi::OsStr;
-use std::fs;
-use std::io::Write;
+use std::fs::File;
+use std::io::{BufWriter, Write};
 use std::path::{Path, PathBuf};
 
 #[allow(dead_code)]
@@ -16,7 +16,7 @@ pub fn get_absolute_file_path(path: &str) -> Result<PathBuf, Box<dyn Error>> {
     }
 
     if matches!(file.extension(), Some(x) if x == OsStr::new("yaml")) {
-        Ok(fs::canonicalize(file)?)
+        Ok(std::fs::canonicalize(file)?)
     } else {
         Err("Unsupported file extension".into())
     }
@@ -25,7 +25,7 @@ pub fn get_absolute_file_path(path: &str) -> Result<PathBuf, Box<dyn Error>> {
 fn make_kube_file(dir: &str, name: &str) -> Result<(), Box<dyn Error>> {
     let kube_file_path = format!("{}/{}.kube", dir, name);
     let yaml_file_path = format!("{}/{}.yaml", dir, name);
-    let mut kube_file = fs::File::create(kube_file_path)?;
+    let mut kube_file = File::create(kube_file_path)?;
 
     let kube_contents = format!(
         r#"[Unit]
@@ -48,7 +48,7 @@ Yaml={}
 
 fn make_yaml_file(dir: &str, name: &str, model: &str) -> Result<(), Box<dyn Error>> {
     let yaml_file_path = format!("{}/{}.yaml", dir, name);
-    let mut yaml_file = fs::File::create(yaml_file_path)?;
+    let mut yaml_file = File::create(yaml_file_path)?;
 
     yaml_file.write_all(model.as_bytes())?;
 
@@ -66,10 +66,34 @@ pub fn perform(
         package_name,
         model_name
     );
-    fs::create_dir_all(&directory)?;
+    std::fs::create_dir_all(&directory)?;
 
     make_kube_file(&directory, model_name)?;
     make_yaml_file(&directory, model_name, parsed_model_str)?;
 
+    Ok(())
+}
+
+pub async fn download(url: &str, path: &str) -> Result<(), Box<dyn std::error::Error>> {
+    let response = reqwest::get(url).await?;
+
+    if response.status().is_success() {
+        let mut file = BufWriter::new(File::create(path)?);
+        let content = response.bytes().await?;
+        std::io::copy(&mut content.as_ref(), &mut file)?;
+        println!("File downloaded to {}", path);
+        Ok(())
+    } else {
+        Err(format!("Failed to download file: {}", response.status()).into())
+    }
+}
+
+pub fn extract(path: &str) -> Result<(), Box<dyn Error>> {
+    let file = File::open(path)?;
+    let mut archive: tar::Archive<File> = tar::Archive::new(file);
+
+    let destination = Path::new(path).parent().unwrap();
+    archive.unpack(destination)?;
+    println!("TAR file extracted to {:?}", destination);
     Ok(())
 }

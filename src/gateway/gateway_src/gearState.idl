@@ -1,8 +1,0 @@
-module gearState
-{
-  @final
-  struct DataType
-  {
-    string gear;
-  };
-};

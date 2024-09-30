@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: Copyright 2024 LG Electronics Inc.
+#
+# SPDX-License-Identifier: Apache-2.0
+
+apiVersion: v1
+kind: Scenario
+metadata:
+  name: version-display
+spec:
+  conditions:
+    express: Equal
+    value: "reverse"
+    operands:
+      type: DDS
+      name: gear_state
+      value: "rt/piccolo/gear_state"
+  actions:
+    - operation: rollback
+  targets:
+    - name: "version-display-1"

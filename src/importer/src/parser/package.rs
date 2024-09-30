@@ -13,7 +13,7 @@ pub struct Package {
     pub volume: String,
 }
 
-pub fn package_parse(path: &str) -> Result<Package, Box<dyn std::error::Error>> {
+pub fn parse(path: &str) -> Result<Package, Box<dyn std::error::Error>> {
     let package_yaml = format!("{}/package.yaml", path);
     let mut f = File::open(package_yaml)?;
     let mut contents = String::new();

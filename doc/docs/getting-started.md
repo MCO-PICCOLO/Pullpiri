@@ -21,30 +21,20 @@ Also, [Rust](https://www.rust-lang.org) is required to test without using a cont
 There is a [piccolo.ini](/piccolo.ini) for configuration. Modify this to suit your system.
 
 ```ini
-HOST_IP=192.168.50.239
-YAML_STORAGE=/root/piccolo_yaml/
+HOST_IP=0.0.0.0
+;if you fix YAML_STORAGE, to fix Makefile is also needed. (make install)
+YAML_STORAGE=/root/piccolo_yaml
 HOST_NODE=master
-GUEST_NODE=worker1
-# more items will be added
+;not used yet
+;GUEST_NODE=worker1
+DOC_REGISTRY=http://mod.lge.com/hub/piccolo/piccolo-bluechi/-/raw/main/examples/res
+;more items will be added
 ```
 
 - HOST_IP : Each modules use this IP address for gRPC communications.
-- YAML_STORAGE : For making systemd service with podman, we need `.kube` and `.yaml` files. yamlparser module makes these files in this directory.
+- YAML_STORAGE : For making systemd service with podman, we need `.kube` and `.yaml` files. Lib `importer` makes these files in this directory.
 - HOST_NAME : To deliver systemd command with `bluechi`, we need node name.
-
-Also you need to modify `HOST_IP` address in `yaml` file.
-
-```yaml
-# in containers/piccolo.yaml, there are 2 host IP env like below.
-...
-value: "192.168.50.239"
-...
-
-# in examples/version-display/qt-msg-sender/qt-sender.yaml,
-...
-value: "192.168.50.239"
-...
-```
+- DOC_REGISTRY : The repository address saving `Packages` and `scenarios`.
 
 ### Piccolo modules
 
@@ -55,16 +45,16 @@ And the [example](/examples/version-display/README.md) would be helpful.
 ## Limitations
 
 - Multi-node system and the resulting node-selectors have not yet been fully considered.
-- For better operation, recommend operating with `root` user.
+- For better operation, recommend operating with `root` user with selinux permissive mode.
 - `/etc/containers/systemd` folder is used for piccolo systemd service files. This cannot be changed.
-- `piccolo.ini` is installed during container build. Therefore, if any changes are made, you must re-run `make image`.
 - Because it is still an early version, it may sometimes take a lot of time to start/stop/update the container.
+- There may be other issues as well.
 
 ## Installation
 
 ### Before installation
 
-need some packages, disable firewall, disable selinux
+need some packages, disable firewall, permissive selinux
 
 ```bash
 # disable firewall
@@ -72,7 +62,7 @@ systemctl stop firewalld
 systemctl disable firewalld
 # install package
 dnf install git-all make gcc -y
-# disable selinux
+# permissive selinux
 setenforce 0
 ```
 
@@ -103,6 +93,23 @@ For stoping,
 
 ```sh
 make uninstall
+```
+
+You can see container list via `podman ps`.
+
+```Text
+[root@master piccolo-bluechi]# podman ps
+CONTAINER ID  IMAGE                                    COMMAND               CREATED         STATUS         PORTS       NAMES
+a89293d15b18  localhost/podman-pause:5.1.2-1720678294                        20 seconds ago  Up 21 seconds              a13f3aa439f3-service
+ebce43e479be  localhost/podman-pause:5.1.2-1720678294                        20 seconds ago  Up 21 seconds              55f9dda92972-infra
+53b9a1631df9  localhost/piccolo:1.0                                          20 seconds ago  Up 20 seconds              piccolo-api-server
+cd0683bb5675  localhost/piccolo:1.0                                          20 seconds ago  Up 21 seconds              piccolo-statemanager
+eb8f60534077  gcr.io/etcd-development/etcd:v3.5.11     --data-dir=/etcd-...  20 seconds ago  Up 21 seconds              piccolo-etcd
+9771320d5fee  localhost/piccolo-gateway:1.0                                  20 seconds ago  Up 21 seconds              piccolo-gateway
+
+[root@master images]# podman pod ps
+POD ID        NAME         STATUS      CREATED        INFRA ID      # OF CONTAINERS
+55f9dda92972  piccolo      Running     6 minutes ago  ebce43e479be  5
 ```
 
 Also refer to [Makefile](/Makefile).

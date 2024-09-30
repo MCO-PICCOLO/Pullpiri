@@ -1,0 +1,19 @@
+[package]
+name = "gateway"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+dust_dds = "0.11.0"
+common = { path = "../common" }
+lazy_static = "1.5.0"
+tonic = "0.12.1"
+prost = "0.13.1"
+tokio = { version = "1.38.0", features = ["macros", "rt-multi-thread"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_yaml = "0.9"
+
+[build-dependencies]
+tonic-build = "0.12.1"

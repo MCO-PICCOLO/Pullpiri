@@ -5,20 +5,6 @@
 version: "3"
 name: "piccolo-reconcile-test"
 services:
-#  dummy-gateway:
-#    network_mode: "host"
-#    image: sdv.lge.com/library/piccolo-reconcile:0.1
-#    image: localhost/piccolo:1.0
-#    command: /piccolo/dummy-gateway
-#    volumes:
-#      - /root/work/projects-rust/piccolo-bluechi/piccolo.ini:/piccolo/piccolo.ini
-#  dummy-light-controller:
-#    network_mode: "host"
-#    privileged: true
-#    image: localhost/piccolo:1.0
-#    volumes:
-#      - /root/work/projects-rust/piccolo-bluechi/piccolo.ini:/piccolo/piccolo.ini
-#    command: /piccolo/dummy-light-controller
   light-dev:
     network_mode: "host"
     image: sdv.lge.com/library/dummy_light_dev:py0.3

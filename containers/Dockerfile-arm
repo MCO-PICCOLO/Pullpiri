@@ -9,9 +9,9 @@ COPY ./src/Cargo.lock \
 COPY ./src/api /piccolo/api
 COPY ./src/api-server/ /piccolo/api-server
 COPY ./src/common/ /piccolo/common
+COPY ./src/gateway/ /piccolo/gateway
 COPY ./src/statemanager/ /piccolo/statemanager
 COPY ./src/tools/ /piccolo/tools
-COPY ./src/yamlparser/ /piccolo/yamlparser
 
 RUN apt update -y && \
     apt upgrade -y && \
@@ -25,8 +25,8 @@ COPY ./piccolo.ini .
 
 COPY --from=builder-arm \
     /piccolo/target/release/api-server \
+    /piccolo/target/release/gateway \
     /piccolo/target/release/statemanager \
-    /piccolo/target/release/yamlparser ./
 
 COPY --from=builder-arm \
     /lib/aarch64-linux-gnu/libc.so.6 \

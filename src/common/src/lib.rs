@@ -4,7 +4,6 @@
  */
 
 pub mod apiserver;
-pub mod dummylightcontroller;
 pub mod etcd;
 pub mod gateway;
 pub mod spec;
@@ -31,7 +30,7 @@ fn init_conf() -> config::Config {
                 .unwrap()
                 .set_default(
                     "DOC_REGISTRY",
-                    "http://mod.lge.com/hub/piccolo/piccolo-utils/documents-registry/-/raw/main",
+                    "http://mod.lge.com/hub/piccolo/piccolo-bluechi/-/raw/main/examples/res",
                 )
                 .unwrap()
                 .build()

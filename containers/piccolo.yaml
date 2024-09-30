@@ -40,10 +40,11 @@ spec:
     - name: config-path
       mountPath: /piccolo/piccolo.ini
   - name: gateway
-    image: localhost/piccolo-gateway:1.0
+    image: localhost/piccolo:1.0
+    command: ["/piccolo/gateway"]
     env:
-    - name: HOST_IP
-      value: "0.0.0.0"
+    - name: RUST_BACKTRACE
+      value: "full"
   - name: dummy-gateway
     image: localhost/piccolo:1.0
     command: ["/piccolo/dummy-gateway"]

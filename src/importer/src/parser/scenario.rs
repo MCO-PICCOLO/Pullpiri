@@ -10,7 +10,7 @@ pub struct Scenario {
     pub scene: String,
 }
 
-pub fn scenario_parse(path: &str) -> Result<Scenario, Box<dyn std::error::Error>> {
+pub fn parse(path: &str) -> Result<Scenario, Box<dyn std::error::Error>> {
     let mut f = File::open(path)?;
     let mut contents = String::new();
     f.read_to_string(&mut contents)?;

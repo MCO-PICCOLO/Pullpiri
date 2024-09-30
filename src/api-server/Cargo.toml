@@ -14,7 +14,6 @@ description = "A piccolo daemon that operates like API-server of k8s"
 common = { path = "../common" }
 importer = { path = "../importer"}
 axum = "0.7.5"
-#futures = "0.3.30"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 tonic = "0.12.1"

@@ -11,9 +11,8 @@ members = [
     "api",
     "common",
     "importer",
+    "gateway",
     "dummy-gateway",
-#    "dummy-light-controller",
-#    "gateway",
 ]
 
 exclude = [
