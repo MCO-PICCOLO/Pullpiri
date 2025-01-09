@@ -4,6 +4,8 @@ SPDX-FileCopyrightText: Copyright 2024 LG Electronics Inc.
 SPDX-License-Identifier: Apache-2.0
 -->
 
+피 콜 로 조 아
+
 # Getting started
 
 ## System requirements
